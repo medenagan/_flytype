@@ -1,7 +1,7 @@
 /*
  *  ngramDB.js (v) 0.0.1
  *
- *  Helper to normalize .chrome and .runtime objects accross different browsers
+ *  A binding to a local database memorizing n-grams
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *

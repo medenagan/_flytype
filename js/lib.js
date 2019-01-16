@@ -1,7 +1,7 @@
 /*
  *  lib.js (v) 0.0.1
  *
- *  Helper to normalize .chrome and .runtime objects accross different browsers
+ *  Library common functions
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *

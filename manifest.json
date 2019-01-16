@@ -34,7 +34,8 @@
         "/js/lib.js",
         "/js/settings.js",
         "/js/range.js",
-        "/js/wordMatcher.js",
+        "/js/matcher.js",
+        "/js/fly.js",
         "/js/flytype.js"
       ],
       "css": [

@@ -1,7 +1,7 @@
 /*
  *  matcherThread.js (v) 0.0.1
  *
- *  Helper to normalize .chrome and .runtime objects accross different browsers
+ *  A worker to n-grammirize data into the database
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *
@@ -16,24 +16,26 @@
   const BEING_WORKER = (typeof importScripts !== "undefined");
 
   // Expecting lib.js already loaded if matcherThread is used as content script
-  if (BEING_WORKER) importScripts("lib.js");
-  if (BEING_WORKER) importScripts("matcherBasics.js");
+  if (BEING_WORKER) {
+    importScripts("lib.js");
+    importScripts("matcher.js");
+  }
 
   console.log("Sono un worker?", BEING_WORKER);
 
-  var wm;
+  var matcher;
 
   self.addEventListener("message", function (e) {
     console.log("worker", e);
     if (e.data.getMatches) {
-      var matches = wm.getMatches(e.data.getMatches);
+      var matches = matcher.getMatches(e.data.getMatches);
       console.log(matches);
       e.ports[0].postMessage(matches);
     }
 
     else if (e.data.words) {
       console.log("Worker got some words");
-      wm = new CWordMatcher(e.data.words);
+      matcher = new Matcher(e.data.words);
     }
   });
 })();

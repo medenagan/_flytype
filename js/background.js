@@ -1,7 +1,7 @@
 /*
- *  background.js (v) 0.0.1
+ *  background.js (v) 1.0.0
  *
- *  Helper to normalize .chrome and .runtime objects accross different browsers
+ *  Main background module
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *
