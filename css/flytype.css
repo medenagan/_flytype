@@ -1,0 +1,256 @@
+/* Neutrilizer */
+ul.flytype_160417_tag.flytype_270318_tag,
+XULul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li,
+
+Xul.flytype_160417_tag.flytype_270318_tag::first-letter,
+Xul.flytype_160417_tag.flytype_270318_tag::first-line,
+Xul.flytype_160417_tag.flytype_270318_tag::selection,
+
+Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::first-letter,
+Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::first-line,
+Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::selection{
+
+align-self : auto;
+alignment-baseline : auto;
+animation-delay : 0s;
+animation-direction : normal;
+animation-duration : 0s;
+animation-fill-mode : none;
+animation-iteration-count : 1;
+animation-name : none;
+animation-play-state : running;
+animation-timing-function : ease;
+backface-visibility : visible;
+background-attachment : scroll;
+background-blend-mode : normal;
+background-clip : border-box;
+background-color : rgba(0, 0, 0, 0);
+background-image : linear-gradient(to right bottom, white, rgba(255, 255, 255, 0.8));
+background-origin : padding-box;
+background-position-x : 0%;
+background-position-y : 0%;
+background-size : auto;
+baseline-shift : 0;
+border-style : none;
+border-width : 0px;
+border-radius : 0px;
+border-style : none;
+border-width : 0px;
+border-collapse : separate;
+border-image-outset : 0;
+border-image-repeat : stretch;
+border-image-slice : 100%;
+border-image-source : none;
+border-image-width : 1;
+box-sizing : content-box;
+break-after : auto;
+break-before : auto;
+break-inside : auto;
+caption-side : top;
+caret-color : rgb(0, 0, 0);
+clear : none;
+clip : auto;
+clip-path : none;
+clip-path : nonzero;
+color : rgb(0, 0, 0);
+color-interpolation : sRGB;
+color-interpolation-filters : linearRGB;
+color-rendering : auto;
+column-count : auto;
+column-fill : balance;
+column-gap : normal;
+column-rule-color : rgb(0, 0, 0);
+column-rule-style : none;
+column-rule-width : 0;
+column-span : all;
+column-width : auto;
+contain : none;
+counter-increment : none;
+counter-reset : none;
+cursor : auto;
+direction : ltr;
+display : block;
+dominant-baseline : auto;
+empty-cells : show;
+fill : rgb(0, 0, 0);
+fill-opacity : 1;
+fill-rule : nonzero;
+filter : ;
+flex-basis : auto;
+flex-direction : row;
+flex-grow : 0;
+flex-shrink : 1;
+flex-wrap : nowrap;
+float : none;
+flood-color : rgb(0, 0, 0);
+flood-opacity : 1;
+font-family : "Times New Roman";
+font-kerning : auto;
+font-size : 18px;
+font-style : normal;
+font-variant-caps : normal;
+font-variant-east-asian : normal;
+font-variant-ligatures : normal;
+font-variant-numeric : normal;
+font-weight : 400;
+grid-auto-columns : auto;
+grid-auto-flow : row;
+grid-auto-rows : auto;
+grid-column-end : auto;
+grid-column-gap : 0;
+grid-column-start : auto;
+grid-row-end : auto;
+grid-row-gap : 0;
+grid-row-start : auto;
+grid-template-areas : none;
+grid-template-columns : none;
+grid-template-rows : none;
+hyphens : manual;
+image-rendering : auto;
+isolation : auto;
+letter-spacing : normal;
+lighting-color : rgb(255, 255, 255);
+line-break : auto;
+line-height : normal;
+list-style-image : none;
+list-style-position : outside;
+list-style-type : disc;
+margin : 0px;
+marker-end : none;
+marker-mid : none;
+marker-start : none;
+mask : none;
+mask-type : luminance;
+max-height : none;
+max-width : none;
+min-height : 0;
+min-width : 0;
+mix-blend-mode : normal;
+object-fit : fill;
+object-position : 50% 50%;
+opacity : 1;
+order : 0;
+orphans : 2;
+outline-color : rgb(0, 0, 0);
+outline-offset : 0;
+outline-style : none;
+outline-width : 0;
+overflow-wrap : normal;
+overflow-x : visible;
+overflow-y : visible;
+padding : 0;
+perspective : none;
+perspective-origin : 50% 50%;
+pointer-events : auto;
+resize : none;
+scroll-behavior : auto;
+shape-rendering : auto;
+speak : normal;
+stop-color : rgb(0, 0, 0);
+stop-opacity : 1;
+stroke : none;
+stroke-dasharray : none;
+stroke-dashoffset : 0;
+stroke-linecap : butt;
+stroke-linejoin : miter;
+stroke-miterlimit : 4;
+stroke-opacity : 1;
+stroke-width : 1px;
+tab-size : 8;
+table-layout : auto;
+text-align : start;
+text-align-last : auto;
+text-anchor : start;
+text-decoration-color : rgb(0, 0, 0);
+text-decoration-line : none;
+text-decoration-style : solid;
+text-indent : 0;
+text-overflow : clip;
+text-rendering : auto;
+text-shadow : none;
+text-transform : none;
+text-underline-position : auto;
+touch-action : auto;
+transform : none;
+transform-origin : 50% 50% 0;
+transform-style : flat;
+transition-delay : 0s;
+transition-duration : 0s;
+transition-property : all;
+transition-timing-function : ease;
+unicode-bidi : normal;
+user-select : none;
+vertical-align : baseline;
+visibility : visible;
+white-space : normal;
+widows : 2;
+will-change : auto;
+word-break : normal;
+word-spacing : 0;
+overflow-wrap : normal;
+writing-mode : horizontal-tb;
+}
+
+/*
+::after	p::after	Insert something after the content of each <p> element
+::before	p::before	Insert something before the content of each <p> element
+
+*/
+
+
+
+
+ul.flytype_160417_tag.flytype_270318_tag {
+  position : fixed;
+  z-index : 2147483647;
+  background: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8));
+  color: black;
+
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 10px;
+  
+  box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.23);
+
+  font-family : "Lucida Grande", verdana, arial, helvetica, sans-serif;
+  font-size : 18px;
+
+  user-select: none;
+}
+
+ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li {
+  height: 100%;
+  max-height: 100%;
+  min-height: 100%;
+  display: inline-block;
+  padding: 10px 3px;
+  cursor: pointer;
+}
+
+ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li:nth-child(2n+1) {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li.flytype_160417_preselected {
+  background: hsl(200, 40%, 80%);
+  color: white;
+  text-shadow: rgba(0, 0, 0, 0.85) 1px 1px 0.5px;
+  border-radius: 2px;
+}
+
+ul.flytype_160417_tag.flytype_270318_tag:empty {
+  display: none;
+}
+
+ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li + li.flytype_270318_li {
+  margin-left: 5px;
+}
+
+.flytype_160417_edit_on {
+  box-shadow: inset #9ee7ef 0 0 15px 0px;
+  border: 1px solid blue;
+  border-radius: 2px;
+}
+
+
+

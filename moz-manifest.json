@@ -1,0 +1,62 @@
+{
+  "manifest_version": 2,
+  "name": "FlyType",
+  "description": "Type faster with flying suggestions as you press the keys",
+  "version": "0.0.1",
+  "author": "Fabio Mereu",
+  "homepage_url": "https://github.com/medenagan/flytype",
+  "icons": {
+    "16": "/png/flytype-16.png",
+    "48": "/png/flytype-48.png",
+    "128": "/png/flytype-128.png"
+  },
+  "permissions": [
+    "contextMenus",
+    "storage"
+  ],
+  "content_security_policy": "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; object-src 'self'",
+  "background": {
+    "scripts": [
+      "/js/ext.js",
+      "/js/background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/ext.js",
+        "js/lib.js",
+        "js/flytype.js"
+      ],
+      "css": [
+        "css/flytype.css"
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "run_at": "document_end"
+    }
+  ],
+  "options_ui": {
+    "page": "/html/options.html",
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_icon": "/png/flytype-19.png",
+    "default_title": "FlyType",
+    "default_popup": "/html/popup.html"
+  },
+  "web_accessible_resources": [
+    "/json/*.json"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "flytype@fabiomereu.it",
+      "strict_min_version": "42a1",
+      "strict_max_version": "*"
+    }
+  }
+}

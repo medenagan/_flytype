@@ -1,0 +1,58 @@
+{
+  "manifest_version": 2,
+  "name": "FlyType",
+  "description": "Type faster with flying suggestions as you press the keys",
+  "version": "1.0.0",
+  "author": "Fabio Mereu",
+  "homepage_url": "https://github.com/medenagan/flytype",
+  "icons": {
+    "16": "/png/flytype-16.png",
+    "48": "/png/flytype-48.png",
+    "128": "/png/flytype-128.png"
+  },
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "alarms"
+  ],
+  "background": {
+    "scripts": [
+      "/js/ext.js",
+      "/js/lib.js",
+      "/js/ngramDB.js",
+      "/js/background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "/js/ext.js",
+        "/js/lib.js",
+        "/js/settings.js",
+        "/js/range.js",
+        "/js/wordMatcher.js",
+        "/js/flytype.js"
+      ],
+      "css": [
+        "css/flytype.css"
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "run_at": "document_end"
+    }
+  ],
+  "options_page": "/html/options.html",
+  "options_ui": {
+    "page": "/html/options.html",
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_icon": "/png/flytype-19.png",
+    "default_title": "FlyType",
+    "default_popup": "/html/popup.html"
+  }
+}

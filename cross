@@ -1,0 +1,10 @@
+_bin:
+
+
+mozilla:
+  manifest.json:
+    'options_page' string is deleted. 'options_ui' object is used instead
+    
+non-mozilla: 
+    'applications' is deleted, The id is valid only for Gecko
+    'options_ui' object is deleted. 'options_page' string is used instead
