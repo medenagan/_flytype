@@ -11,16 +11,44 @@
 
 "use strict";
 
+var ID_MENU_PAUSE = "flytype-menu-pause";
 var WAIT_MINS_AUTO_FLUSH = 10.0;
+
+var ICONS = {}, ICONS_PAUSED = {};
+([16, 32, 48, 64, 128]).forEach(function (value) {
+  ICONS[value] = "/png/flytype-" + value + ".png";
+  ICONS_PAUSED[value] = "/png/flytype-paused-" + value + ".png";
+});
 
 // Provide async word matching
 var wkMatcher = new Worker("js/matcherThread.js");
+
+function setIcon() {
+  meta.chrome.browserAction.setIcon({
+    path: (settings.paused ? ICONS_PAUSED : ICONS)
+  });
+
+  meta.chrome.contextMenus.update(ID_MENU_PAUSE, {checked: settings.paused});
+}
+
+settings.listen(function(oldData, newData) {
+  if (oldData.paused !== newData.paused)
+    setIcon();
+});
+
+settings.read(setIcon);
+
+meta.chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  if (info.menuItemId === ID_MENU_PAUSE) {
+    settings.paused = info.checked;
+  }
+})
 
 
 
 
 //example of using a message handler from the inject scripts
-meta_chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   if (request.matcher) {
     var channel = new MessageChannel();
@@ -52,41 +80,36 @@ meta_chrome.runtime.onMessage.addListener(function(request, sender, sendResponse
   }
 
 
- // meta_chrome.extension.pageAction.show(sender.tab.id);
+ // meta.chrome.extension.pageAction.show(sender.tab.id);
  // sendResponse();
 });
 
 
 
-meta_chrome.runtime.onInstalled.addListener(function() {
+meta.chrome.runtime.onInstalled.addListener(function() {
   // Create a popup for editable
   var menuContexts = ["editable"];
-  var menuParentId = meta_chrome.contextMenus.create({title: "FlyType", id: "flytype-menu-parent", contexts: menuContexts});
-  meta_chrome.contextMenus.create({title: "Pause", id: "flytype-menu-pause",
+  var menuParentId = meta.chrome.contextMenus.create({title: "FlyType", id: "flytype-menu-parent", contexts: menuContexts});
+  meta.chrome.contextMenus.create({title: "Pause", id: ID_MENU_PAUSE,
     parentId: menuParentId, type: "checkbox", contexts: menuContexts
   });
 
+  console.log("onInstalled.");
+   // chrome.browserAction.setBadgeText({text: ""});
+});
+
+
+
+
+
+
+meta.chrome.runtime.onStartup.addListener(function() {
   console.log("onStartup.");
    // chrome.browserAction.setBadgeText({text: ""});
 });
 
 
-meta_chrome.contextMenus.onClicked.addListener(function(info, tab) {
-  console.log("item " + info.menuItemId + " was clicked");
-  console.log("info: " + JSON.stringify(info));
-  console.log("tab: " + JSON.stringify(tab));
-})
-
-
-
-
-meta_chrome.runtime.onStartup.addListener(function() {
-  console.log("onStartup.");
-   // chrome.browserAction.setBadgeText({text: ""});
-});
-
-
-meta_chrome.runtime.onSuspend.addListener(function() {
+meta.chrome.runtime.onSuspend.addListener(function() {
 //  ngram.flush();
   console.log("onSuspend / Unloading.");
    // chrome.browserAction.setBadgeText({text: ""});
@@ -94,8 +117,8 @@ meta_chrome.runtime.onSuspend.addListener(function() {
 
 // Test of i
 var i = 0;
-meta_chrome.alarms.create({delayInMinutes: WAIT_MINS_AUTO_FLUSH, periodInMinutes: WAIT_MINS_AUTO_FLUSH});
-meta_chrome.alarms.onAlarm.addListener(function() {
+meta.chrome.alarms.create({delayInMinutes: WAIT_MINS_AUTO_FLUSH, periodInMinutes: WAIT_MINS_AUTO_FLUSH});
+meta.chrome.alarms.onAlarm.addListener(function() {
   console.log("Flush, Hello, world!", ++i, new Date())
 });
 
@@ -126,7 +149,7 @@ function aJSON(languageCode, callback) {
 
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.responseType = "json";
-  xmlhttp.open("GET", meta_chrome.extension.getURL("json/_" + languageCode + ".json"));
+  xmlhttp.open("GET", meta.chrome.extension.getURL("json/_" + languageCode + ".json"));
 
   xmlhttp.onerror = function () {
     console.error("aJSON.onError", this);

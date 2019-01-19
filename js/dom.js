@@ -1,7 +1,7 @@
 /*
- *  flytype.js (v) 0.0.1
+ *  dom.js (v) 0.0.1
  *
- *  Helper to normalize .chrome and .runtime objects accross different browsers
+ *  Content script adding a fly into the dom
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *
@@ -27,12 +27,9 @@ var TAG_POPUP_WAIT = 1750;
 
 var SPACE_LIKE_CHARS = ". :;!?,";
 
-var REX_LEFT_WORD_BEGINNING = /[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+$/
-var REX_RIGHT_WORD_BREAK = /[^-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]/;
+
 
 var REX_WORD_BREAK_CHAR = /[^-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]/;
-
-var settings = {};
 
 var KEY_BACKSPACE = 8;
 var KEY_TAB = 9;
@@ -58,10 +55,11 @@ INSTRUCTIONS:
 */
 
 
+
 var fly = new Fly();
 
 function aLoadDictionary (language, callback) {
-  meta_chrome.runtime.sendMessage({loadDictionary: language}, callback);
+  meta.chrome.runtime.sendMessage({loadDictionary: language}, callback);
 }
 
 aLoadDictionary("en", function (dictionary) {
@@ -81,7 +79,7 @@ function flushText(text) {
   if (typeof text !== "string")
     return;
 
-  meta_chrome.runtime.sendMessage({
+  meta.chrome.runtime.sendMessage({
     ngram: {excerptText: text}
   });
 
@@ -102,14 +100,27 @@ function main() {
   document.addEventListener("focusout", onFocusOut);
   document.addEventListener("mousedown", onMouseDown);
   window.addEventListener("beforeunload", onBeforeUnload);
+  settings.listen(onSettingsChanged);
+  settings.read(onSettingsFirstlyRead);
 
 //  if (DEBUG) document.addEventListener("mousemove", onClick);
 };
 
 
+function onSettingsFirstlyRead(data) {
+  fly.disabled = data.paused;
+}
+
+function onSettingsChanged(oldData, newData) {
+  if (oldData.paused !== newData.paused) {
+    fly.disabled = newData.paused;
+  }
+  console.log("Qualcosa cambia");
+}
+
 function onBeforeUnload(e) {
+  stats.save();
   console.log("CIAOCIAO", e);
-  return "X";
 }
 
 
@@ -161,7 +172,7 @@ function onKeydown (e) {
 
   // CTRL + SPACE  disable or enable flytype on the page
   if (e.ctrlKey && e.keyCode === KEY_SPACE) {
-    fly.toggle();
+    settings.paused = fly.toggle();
     e.preventDefault();
     return false;
   }
@@ -188,7 +199,7 @@ function onKeydown (e) {
 
   // If user has pressed a sequence of keys + " " (or "," ...), since onKeyUp event has not been fired yet, force suggestions before handling
   if (longPress && isReplacingKey) {
-    fly.trigger({synch: true, show: !true});
+    fly.trigger({synch: true, show: true});
     // If at least one suggestion was found, then it can replace
     console.log("Suggestions FORCED\n");
   }
@@ -202,8 +213,13 @@ function onKeydown (e) {
   // Any space, comma, when fly is on applies the suggestion
   if (isReplacingKey) {
     // Apply last suggestion
-    /////// fly.replace({suffix: e.key.trim()}); FIXME
-    fly.replace();
+    var replaced = fly.replace();
+    if (replaced) {
+      console.log(replaced);
+      stats.savedKeys = replaced;
+      stats.replacedWords = +1;
+    }
+
     // Avoid hiding, as it flashes too much when the user types fast
     fly.hide();
     // Prevent key up and default
@@ -219,7 +235,12 @@ function onKeydown (e) {
     e.keyCode === KEY_DOWN_ARROW) {
 
     if (longPress) {
-      fly.replace();
+      var replaced = fly.replace();
+      if (replaced) {
+        console.log(replaced)
+        stats.savedKeys = replaced;
+        stats.replacedWords = +1;
+      }
       _preventKeyUp_ = true;
       fly.hide();
     }
@@ -268,11 +289,14 @@ function onKeyup(e) {
      -   or ALT pressed (triggered by user when wants to see matches)
   */
 
-  if (fly.target === e.target &&
-    (!e.ctrlKey) &&
-    (e.key.length === 1 || e.keyCode === KEY_BACKSPACE || e.keyCode === KEY_ALT || e.keyCode === KEY_DELETE))
+
+
+  if ( (fly.target === e.target) && (! e.ctrlKey) &&
+       (e.key.length === 1 || e.keyCode === KEY_BACKSPACE || e.keyCode === KEY_ALT || e.keyCode === KEY_DELETE))
   {
     fly.trigger({show: true, synch:true });
+    // Increase only for printable chars
+    if (e.key.length === 1) stats.pressedKeys = +1;
   }
 };
 
@@ -595,22 +619,7 @@ return;
 
 function debug() {}
 
-/*
 
-Stats:
-
-replacedWords: number of words FlyType has replaced:
- "busi" -> "business" = +1
-
-savedKeys: number of characters FlyType has saved. It's defined as the Levenshtein distance between the initial word typed by the user and the word that FlyType actually replaced
- "busi" -> "business" = +4
-
-typedKeys: number of keys typed in general, even if not replace occurs
-  "DNA" = +3
-
-
-
-*/
 
 function debug7() {
   console.log("flytype DEBUG on");

@@ -15,7 +15,7 @@ function Fly() {
 
   var tag = new CSuggestionsTag();
 
-  var disable = false;
+  var _disabled = false;
 
   var hasReplaced;
 
@@ -40,9 +40,25 @@ function Fly() {
       // Avoid late async suggestions from being shown
       _lastAnatomy = null;
       console.log("anatomy azzerata");
-      if (!disable) _target.classList.add(CSS_EDIT_ON);
+      if (_target && !_disabled) _target.classList.add(CSS_EDIT_ON);
     }
   });
+
+  Object.defineProperty(this, "disabled", {
+    get () {
+      return _disabled;
+    },
+
+    set(value) {
+      _disabled = !!value;
+      mySelf.target = mySelf.target;
+    }
+  });
+
+  this.toggle = function () {
+    this.disabled = !this.disabled;
+    return this.disabled;
+  }
 
   this.assumeNewCaret = function () {
     // Prevent any queued async suggestion to be shown
@@ -82,18 +98,11 @@ function Fly() {
     }
   });
 
-
-  this.toggle = function () {
-    disable = !disable;
-    mySelf.target = mySelf.target;
-  }
-
-
   this.replace = function (options) {
 
     ///if (edit.selectionEnd - edit.selectionStart > 1) return; FIXME
 
-    if (disable) return;
+    if (_disabled) return;
 
     var anatomy = anatomizeCurrentWord(_target);
 
@@ -111,10 +120,10 @@ function Fly() {
     // Add a before after if not value after or no ".", " "
     if (anatomy.beforeValue.length && " \n@#".indexOf(anatomy.beforeValue[anatomy.beforeValue.length - 1]) === -1) options.word = " " + options.word;
 
-    // Selection must be greater than 0
-    if (true || anatomy.selectionStart < anatomy.selectionEnd) {
-      anatomy.wordRange.replaceText(options.word);
-    }
+    anatomy.wordRange.replaceText(options.word);
+
+    return anatomy.word.levenshtein(options.word);
+
   };
 
   /*
@@ -123,23 +132,25 @@ function Fly() {
 
   this.trigger = function (options) {
 
-    if (! _matcher || disable) return;
+    if (! _matcher || _disabled) return;
 
     if (! (options instanceof Object)) options = {};
 
     var anatomy = _lastAnatomy = anatomizeCurrentWord(_target);
 
+    console.log({anatomy})
+
     // Get an array of words to suggest
 
     // Synch way: to avoid if possible
     if (options.synch) {
-      console.log("Fly.trigger was collaed SYNCH")
+      console.log("Fly.trigger was called SYNCH")
       gotSuggestions(_matcher.getMatches(anatomy.word));
     }
 
     else {
       // ASYNCH way (through worker)
-      meta_chrome.runtime.sendMessage({matcher: {getMatches: anatomy.word}}, gotSuggestions);
+      meta.chrome.runtime.sendMessage({matcher: {getMatches: anatomy.word}}, gotSuggestions);
     }
 
     function gotSuggestions(suggestions) {
@@ -396,107 +407,52 @@ function CSuggestionsTag() {
 }
 
 function anatomizeCurrentWord (node) {
-/*
-      var ch = new CChronos();
-      pippo = (new_range(e.target)).fitToSelection().collapseToRight();
-      pippo = pippo.growToLeft().search(/[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+$/i).merge(pippo.growToRight().search(/^[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+/i));
-      ch.log("word time");
-
-*/
 
 
 
-    var res = {};
-
-    // Get position in the middle
-    //var pos = Math.floor(0.5 * (edit.selectionStart + edit.selectionEnd));
-
-    /* Mode:
-         1. BREAK (default): "des|pite", "|despite" "despite|" -> _despite_   ALLOWSPACE: " for | tress " -> _for  tress _
-         2. LEFT: "wikipedia|is" -> _wikipedia_   "some|thing" -> _some_   ALLOWSPACE: " your | heart " -> _your _
-         3. RIGHT: "wikipedia|is" -> "is"   "some|thing" -> "thing"   ALLOWSPACE: " your | heart " -> " heart"
-    */
+    var anatomy = {};
 
     // Selected range
-    res._selectionRange = (new_range(node)).fitToSelection();
+    anatomy._selectionRange = Range.create(node).fitToSelection();
 
     // By default, collapse to right
-    res._collapsedRange = res._selectionRange.collapseToRight();
+    anatomy._collapsedRange = anatomy._selectionRange.collapseToRight();
 
-    res._leftRange = res._collapsedRange.growToLeft();
-    res._rightRange = res._collapsedRange.growToRight();
+    anatomy._leftRange = anatomy._collapsedRange.growToLeft();
+    anatomy._rightRange = anatomy._collapsedRange.growToRight();
 
 
     // "La mia par|ola diventa" -> "La mia par", "ola diventa"
-    res.leftValue = res._leftRange.toString();
-    res.rightValue = res._rightRange.toString();
+    anatomy.leftValue = anatomy._leftRange.toString();
+    anatomy.rightValue = anatomy._rightRange.toString();
 
     // Get left boundaries: "... par|ola ..." -> "par"
-    res._leftWordRange = res._leftRange.search(/[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+$/i);
+    anatomy._leftWordRange = anatomy._leftRange.search(/[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+$/i);
 
     // Get right boundaries: "... par|ola ..." -> "ola"
-    res._rightWordRange = res._rightRange.search(/^[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+/i);
+    anatomy._rightWordRange = anatomy._rightRange.search(/^[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+/i);
 
-    res.wordRange = res._leftWordRange.merge(res._rightWordRange);
-    res.wordString = res.word = res.wordRange.toString();
+    anatomy.wordRange = anatomy._leftWordRange.merge(anatomy._rightWordRange);
+    anatomy.wordString = anatomy.word = anatomy.wordRange.toString();
 
-    res._leftWord = res._leftWordRange.toString();
-    res._rightWord = res._rightWordRange.toString();
+    anatomy._leftWord = anatomy._leftWordRange.toString();
+    anatomy._rightWord = anatomy._rightWordRange.toString();
 
 
     // "La mia par|ola diventa" -> "La mia "
-    res._beforeRange = res._leftWordRange.collapseToLeft().growToLeft();
+    anatomy._beforeRange = anatomy._leftWordRange.collapseToLeft().growToLeft();
 
     // "La mia par|ola diventa" -> " diventa "
-    res._afterRange = res._rightWordRange.collapseToRight().growToRight();
+    anatomy._afterRange = anatomy._rightWordRange.collapseToRight().growToRight();
 
 
-    res.beforeValue = res._beforeRange.toString();
-    res.afterValue =  res._afterRange.toString();
-
-    // Detect any ".", "!", "?" before the current word
-    res.newSentence = !res.beforeValue.length || /[!\?\.\n]\s*$/.test(res.beforeValue);
-
-/*
-
-    var _exec = /[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+$/.exec(res.leftValue);
-    if (_exec) {
-      res.leftWord = _exec[0];
-      res.selectionStart = NaN; //_exec.index;
-    }
-    else {
-      res.leftWord = "";
-      res.selectionStart = res.leftValue.length;
-    }
-    // Get right boundaries: "... par|ola ..." -> "ola"
-    _exec = /^[-'0-9A-Za-zÀ-ÖØ-öĀ-ſ]+/.exec(res.rightValue);
-    if (_exec) {
-      res.rightWord = _exec[0];
-      res.selectionEnd = res.leftValue.length + res.rightWord.length;
-    }
-    else {
-      res.rightWord = "";
-      res.selectionEnd = res.leftValue.length;
-    }
-
-*/
-
-
-
-    // Complete word
-//    res.word = res.leftWord + res.rightWord;
-
-    // "La mia par|ola diventa" -> "La mia "
-//    res.beforeValue = res.leftValue.substr(0, res.selectionStart);
-    // "La mia par|ola diventa" -> " diventa "
- //   res.afterValue = res.rightValue.substr(res.rightWord.length);
+    anatomy.beforeValue = anatomy._beforeRange.toString();
+    anatomy.afterValue =  anatomy._afterRange.toString();
 
     // Detect any ".", "!", "?" before the current word
- //   res.newSentence = !res.beforeValue.length || /[!\?\.\n]\s*$/.test(res.beforeValue);
+    anatomy.newSentence = !anatomy.beforeValue.length || /[!\?\.\n]\s*$/.test(anatomy.beforeValue);
 
-    //console.log("anatomize current word", res);
-    return res;
-
+    return anatomy;
   };
 
 
@@ -631,31 +587,11 @@ Array.prototype.equals = function (array) {
   return true;
 };
 
-String.prototype.regexIndexOf = function (pattern) {
+String.prototype.regexIndexOf_ = function (pattern) {
   var rex = pattern.exec(this);
   return rex ? rex.index : -1;
 };
 
-String.prototype.startsWithUpperCase = function () {
-  var char = (this).charAt(0);
-  // "A" != "a" and "'" == "'", function considers upper case only first case
-  return char !== char.toLowerCase();
-};
-
-String.prototype.toFirstUpperCase = function () {
-  return (this[0] || "").toUpperCase() + this.substr(1);
-};
-
-
-function new_range(whatFrom) {
-  // https://stackoverflow.com/questions/25766664/check-if-dom-element-is-editable-allow-user-input-with-pure-js
-  if (whatFrom instanceof HTMLInputElement || whatFrom instanceof HTMLTextAreaElement) {
-    return new CTextareaRange(whatFrom);
-  }
-  else {
-    return new CRange(whatFrom);
-  }
-}
 
 (function () {
   // Based on faux div technique https://github.com/component/textarea-caret-position/conblob/master/index.js

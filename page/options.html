@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="/jquery.mobile/jquery.mobile-1.4.5.min.css">
   <script src="/jquery.mobile/jquery-2.1.4.min.js"></script>
   <script src="/jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
-  <script src="/js/ext.js"></script>
+  <script src="/js/meta.js"></script>
   <script src="/js/lib.js"></script>
+  <script src="/js/stats.js"></script>
   <script src="/js/ngramDB.js"></script>
   <script src="/js/settings.js"></script>
   <script src="/js/options.js"></script>
@@ -105,54 +106,58 @@
       </div>
     </div>
   </div>
+
   <div id="stats" class="ui-body-d ui-content">
     <h2>Stats</h2>
     <ul data-role="listview" data-inset="true">
-      <li>Pressed keys<span class="ui-li-count" id="span-stats-pressed">564,349</span></li>
-      <li>Saved keys<span class="ui-li-count" id="span-stats-saved">5.12M</span></li>
-      <li data-role="list-divider">Divider<span class="ui-li-count">3</span></li>
-      <li>am</li>
-      <li>static<span class="ui-li-count">6</span></li>
+      <li>Replaced words<span class="ui-li-count" id="stats-replaced-words"></span></li>
+      <li>Pressed keys<span class="ui-li-count" id="stats-pressed-keys"></span></li>
+      <li>Saved keys<span class="ui-li-count" id="stats-saved-keys"></span></li>
+      <!-- li data-role="list-divider">Divider<span class="ui-li-count">3</span></li -->
     </ul>
+    <div class="ui-field-contain">
+      <input type="button" id="clear-stats" title="Erase all stats" value="Clear all">
+    </div>
   </div>
-
 
   <div id="grambase" class="ui-body-d ui-content">
     <h2>Db</h2>
     <p>DAta collected</p>
-    <fieldset id="grid-db" class="ui-grid-d ui-responsive">
-<!----><div class="ui-block-a"><div class="ui-bar ui-bar-a">n-gram</div></div>
-<!----><div class="ui-block-b"><div class="ui-bar ui-bar-a">Count</div></div>
-<!----><div class="ui-block-c"><div class="ui-bar ui-bar-a">Occurrences</div></div>
-<!----><div class="ui-block-d"><div class="ui-bar ui-bar-a">Highest</div></div>
-<!----><div class="ui-block-e"><div class="ui-bar ui-bar-b">Weight</div></div>
-<!----><div class="ui-block-a"><div class="ui-body ui-body-a">1</div></div>
-<!----><div class="ui-block-b"><div class="ui-body ui-body-a">356</div></div>
-<!----><div class="ui-block-c"><div class="ui-body ui-body-a"">87,340</div></div>
-<!----><div class="ui-block-d"><div class="ui-body ui-body-a">45</div></div>
-<!----><div class="ui-block-e"><div class="ui-body ui-body-b">98.56%</div></div>
-    </fieldset>
 
-<p> ciaoo </p>
+    <adiv class="ui-field-contain" id="opt-lucrezia">
+      <fieldset data-role="controlgroup" data-type="horizontal">
+        <label for="radioNGramOn">On</label>
+        <input type="radio" name="a" id="radioNGramOn" checked>
+        <label for="radioNGramOff">Off</label>
+        <input type="radio" name="a" id="radioNGramOff">
+        <legend>Build personalized suggestions based on what I type<br>
+          <small>FlyType doesn't use encryption. Data are stored offline on your hard disk.<br>
+            Don't use in a shared computed</small>
+        </legend>
+      </fieldset>
+      <legend>Build personalized suggestions based on what I type<br>
+        <small>FlyType doesn't use encryption. Data are stored offline on your hard disk.<br>
+          Don't use in a shared computed</small>
+      </legend>
+    </adiv>
 
-
-<table data-role="table" id="db-table" data-mode="reflow" class="ui-responsive table-stroke" style="text-align: center;">
-  <thead class="ui-table-cell-label">
-    <tr>
-      <th data-priority="1" class="ui-bar ui-bar-a">N-gram</th>
-      <th data-priority="persist" class="ui-bar ui-bar-a">Count</th>
-      <th data-priority="2" class="ui-bar ui-bar-a">Occurrences</div></th>
-      <th data-priority="3" class="ui-bar ui-bar-a">Lowest</abbr></th>
-      <th data-priority="4" class="ui-bar ui-bar-a">Highest</th>
-      <th data-priority="4" class="ui-bar ui-bar-b">Coverage</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="ui-body ui-body-a">Data being updated...</td>
-    </tr>
-  </tbody>
-</table>
+    <table data-role="table" id="db-table" data-mode="reflow" class="ui-responsive table-stroke" style="text-align: center;">
+      <thead class="ui-table-cell-label">
+        <tr>
+          <th data-priority="1" class="ui-bar ui-bar-a" title="The number of words composing each segment">n-gram</th>
+          <th data-priority="persist" class="ui-bar ui-bar-a" title="How many uniq segments have been collected">Count</th>
+          <th data-priority="2" class="ui-bar ui-bar-a" title="How many non-uniq segments have been recorded">Occurrences</div></th>
+          <th data-priority="3" class="ui-bar ui-bar-a" title="The lowest frequency of a uniq segment">Lowest</abbr></th>
+          <th data-priority="4" class="ui-bar ui-bar-a" title="The highest frequency of a uniq segment">Highest</th>
+          <th data-priority="4" class="ui-bar ui-bar-b">Coverage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ui-body ui-body-a">Data being updated...</td>
+        </tr>
+      </tbody>
+    </table>
 
 <div class="ui-field-contain">
   <div data-role="rangeslider" data-track-theme="b" data-theme="b">
@@ -274,7 +279,7 @@
         <a href="#purchase" data-rel="popup" data-position-to="window" data-transition="pop">Purchase album</a>
       </li>
     </ul>
-    
+
 
 
     <form>

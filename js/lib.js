@@ -268,3 +268,27 @@ Function.prototype.testTimes = function(n) {
 
   if (i < n) return (this).call();
 }
+
+
+
+
+
+
+
+
+
+
+
+///
+
+String.prototype.startsWithUpperCase = function () {
+  var char = this.charAt(0);
+  return char !== char.toLowerCase();
+};
+
+String.prototype.toFirstUpperCase = function () {
+  return this.charAt(0).toUpperCase() + this.substr(1);
+};
+
+
+console.log("".toFirstUpperCase());

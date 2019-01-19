@@ -1,74 +1,101 @@
 "use strict";
 
-(function (root) {
-  // global defined in ext.js
-  if (! root) root = global;
+var settings = (typeof settings !== "undefined") ? settings : (function () {
 
-  if (root.settings) return;
-  
+  console.log("SYD", typeof syd);
+
+  var syd = true;
+
+  var storageArea = meta.chrome.storage.local;
+  var VERSION = meta.chrome.runtime.getManifest().version;
+
   // Default values
-  const DEFAULT_SUGGESTIONS = 6;
-  const MAX_SUGGESTIONS = 6;
-  const MIN_SUGGESTIONS = 1;
-  
-  root.settings = normalizeSettingsValues(); // {... default}
+  var DEFAULT_SUGGESTIONS = 6;
+  var MAX_SUGGESTIONS = 6;
+  var MIN_SUGGESTIONS = 1;
 
+  var cached = normalizeSettings();
 
-  meta_chrome.storage.local.get("settings", function (result) {
-    if (meta_chrome.lastTimeError) {
-      console.log(meta_chrome.lastTimeError);
-      return;
+  function normalizeSettings(raw) {
+    var normalized = (typeof raw === "object") ?
+      (raw) :
+      ({
+        version: VERSION,
+        created: (new Date()).toJSON()
+      });
+
+    normalized.maxSuggestions = (Number.isFinite(normalized.maxSuggestions)) ?
+      Math.max(MIN_SUGGESTIONS, Math.min(MAX_SUGGESTIONS, Math.floor(normalized.maxSuggestions))) :
+      DEFAULT_SUGGESTIONS;
+
+    normalized.paused = !!normalized.paused;
+
+    return normalized;
+  }
+
+  function listenToSettings(callback) {
+
+    if (typeof callback !== "function")
+      throw new Error("settings.listen needs a callback")
+
+    meta.chrome.storage.onChanged.addListener(function (changes, area) {
+      if (changes && changes.hasOwnProperty("settings") && meta.chrome.storage[area] === storageArea) {
+        var oldNormalized = normalizeSettings(changes.settings.oldValue);
+        var newNormalized = normalizeSettings(changes.settings.newValue);
+        cached = newNormalized;
+        callback.call(null, oldNormalized, newNormalized);
+      }
+    });
+  }
+
+  function readSettings(callback) {
+    storageArea.get(["settings"], function(result) {
+      var normalized = normalizeSettings(result.settings);
+      cached = normalized;
+      callback.call(null, normalized);
+    });
+  }
+
+  // readSettings(function () {/* read first time and cache */});
+  ////listenToSettings(function () {/* read first time and cache */});
+
+  function writeSettings(changes) {
+
+    readSettings(function (readSettings) {
+
+      var settingsToWrite = normalizeSettings(
+        Object.assign(readSettings, changes)
+      );
+
+      settingsToWrite.updated = (new Date()).toJSON();
+
+      storageArea.set({settings: settingsToWrite});
+    });
+  }
+
+  var instance = {
+    read: readSettings,
+    listen: listenToSettings
+  };
+
+  Object.defineProperty(instance, "paused", {
+
+    get() {
+      return cached.paused;
+    },
+
+    set(value) {
+      writeSettings({paused: value});
     }
-    // FIXME ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    console.log(result.settings);
   });
 
-  // Every content script can use settings in read-only mode to know the last user values
-  meta_chrome.storage.onChanged.addListener(function(changes, namespace) {
-    if (namespace === "sync" && changes.settings) {
-      // FIXME ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      gotSettingsFromStorage(changes.settings.newValue);
-    }
-    else {
-      console.log(changes, namespace, "boh");
-    }
-  });  
-  
-  // Load for the first time
-  meta_chrome.storage.sync.get("settings", function (result) {
-    if (meta_chrome.lastTimeError) {
-      console.error(meta_chrome.lastTimeError);
-    }
-    else {
-      gotSettingsFromStorage(result.settings);
-    }
-  });
-
-
-  // Set the settings shadow copy on scope
-  function gotSettingsFromStorage(data) {
-    root.settings = normalizeSettingsValues(data);
-    console.log("got settings: ", root.settings);
-    if (root.onSettingsChanged instanceof Function) root.onSettingsChanged(root.settings);
-  }
-  
-  function normalizeSettingsValues(obj) {
-    if (! (obj instanceof Object)) obj = {};
-    
-    // maxSuggestions
-    if (Number.isFinite(obj.maxSuggestions)) {
-      // | 0 = Math.floor 32bit
-      obj.maxSuggestions = Math.max(MIN_SUGGESTIONS, Math.min(MAX_SUGGESTIONS, obj.maxSuggestions | 0));
-    }
-    else{
-      obj.maxSuggestions = DEFAULT_SUGGESTIONS;
-    }       
-
-    return obj;    
-  }
+  return instance;
 
 })();
 
-function onSettingsChanged(pippo) {
-  console.log("Tolomeo", pippo, typeof pippo);
-}
+
+console.log("SIDDARTHA");
+
+settings.listen(function(data) {
+  console.log("Settings have changed", data);
+});

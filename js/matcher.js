@@ -99,13 +99,13 @@ function Matcher(initialWords) {
     return new RegExp(pattern, "i");
   };
 
-  
+
   this.getMatches = function (radix) {
     // "cl" -> ["call", "called", "close", "clear", "cold", "calling"]
 
     console.log({radix});
 
-    // Return no result in for "929"
+    // Return no result for numbers, emails
     if (radix.length === 0 || /[0-9@]/.test(radix))
       return {words: [], index: -1};
 

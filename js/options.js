@@ -11,11 +11,13 @@
 
 "use strict";
 
+
+
 var dbHandler = new CMultiCallbackHelper();
 var dbInfo = {};
 
 // Extract asynch info on n-grams
-meta_chrome.runtime.sendMessage({ngram: {getInfo: true}}, dbHandler.callback(function (response) {
+meta.chrome.runtime.sendMessage({ngram: {getInfo: true}}, dbHandler.callback(function (response) {
   if (response && response.arrGram) dbInfo = response;
 }));
 
@@ -33,6 +35,19 @@ sh.port.onmessage = function(e) {
 
 
 $(document).on("pagecreate", function() {
+
+  var $gramPaste = $("input#gram-paste");
+  var $popupGramPasteError = $("div#popup-gram-paste-error");
+  var $pGramPasteError = $("p#label-gram-paste-error");
+  var $gramFile = $("input#gram-file");
+  var $gramFileProgress = $("#gram-file-progress");
+  var $exportCSV =$("button#export-csv");
+  //
+  var $statsPressedKeys = $("span#stats-pressed-keys");
+  var $statsSavedKeys = $("span#stats-saved-keys");
+  var $statsReplacedWords = $("span#stats-replaced-words");
+  var $clearStats = $("input#clear-stats");
+
 
   $("#theme-selector input").on("change", function(event) {
     var themeClass = $("#theme-selector input:checked").attr("id");
@@ -68,6 +83,21 @@ $(document).on("pagecreate", function() {
       $("#testpage .ui-footer h4").show();
     }
   });
+
+  $clearStats.click(function () {
+    if (confirm("WARNING: This action can't be undone.\n\nAre you sure you want to clear all statistics?")) {
+      stats.clear();
+    }
+  });
+
+  function printStats(stats) {
+    $statsPressedKeys.text(stats.pressedKeys || "-");
+    $statsSavedKeys.text(stats.savedKeys || "-");
+    $statsReplacedWords.text(stats.replacedWords || "-");
+  }
+
+  stats.listen(printStats);
+  stats.read(printStats);
 
   // CFileListAsyncJob is okay for many files with small size, since each one is loaded after the previous one has been handled
   // Cannot be used for big files
@@ -117,14 +147,6 @@ $(document).on("pagecreate", function() {
   }
 
 
-
-
-  const $gramPaste = $("input#gram-paste");
-  const $popupGramPasteError = $("div#popup-gram-paste-error");
-  const $pGramPasteError = $("p#label-gram-paste-error");
-  const $gramFile = $("input#gram-file");
-  const $gramFileProgress = $("#gram-file-progress");
-  const $exportCSV =$("button#export-csv");
 
 
 	function tasinantaFile(fileList) {
@@ -206,7 +228,7 @@ $(document).on("pagecreate", function() {
 
     _hashes[hash] = true;
 
-    meta_chrome.runtime.sendMessage({ngram: {excerptText: pastedText}}, function (response) {
+    meta.chrome.runtime.sendMessage({ngram: {excerptText: pastedText}}, function (response) {
       console.log("excerptText", response);
       if (response) showGramPopup((response.length) ? (response.length + " words sent to the grambase.") : ("No words found, sorry."));
       _onPasting = false;
@@ -215,16 +237,16 @@ $(document).on("pagecreate", function() {
 
   $exportCSV.click(function () {
     $exportCSV.prop("disabled", true);
-    meta_chrome.runtime.sendMessage({ngram: {getInfo: {csv: true}}}, function (response) {
+    meta.chrome.runtime.sendMessage({ngram: {getInfo: {csv: true}}}, function (response) {
       $exportCSV.prop("disabled", false);
       console.log("getInfo", response);
     });
   });
 
-  const $dbTable = $("table#db-table");
-  const $dbTableBody = $("table#db-table tbody");
-  const DBTABLE_TD   = "<td class='ui-body ui-body-a'></td>";
-  const DBTABLE_TD_B = "<td class='ui-body ui-body-b'></td>";
+  var $dbTable = $("table#db-table");
+  var $dbTableBody = $("table#db-table tbody");
+  var DBTABLE_TD   = "<td class='ui-body ui-body-a'></td>";
+  var DBTABLE_TD_B = "<td class='ui-body ui-body-b'></td>";
 
   dbHandler.once(function () {
     // dbInfo can be undefined in case of error
@@ -281,6 +303,9 @@ $(document).on("pagecreate", function() {
     });
   });
 });
+
+
+
 
 // <parentElement><element1></element1><element2></element2>...</parentElement>
 function $encapsulateElements(parentElement) {

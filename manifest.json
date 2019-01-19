@@ -17,8 +17,9 @@
   ],
   "background": {
     "scripts": [
-      "/js/ext.js",
+      "/js/meta.js",
       "/js/lib.js",
+      "/js/settings.js",
       "/js/ngramDB.js",
       "/js/background.js"
     ],
@@ -30,13 +31,14 @@
         "<all_urls>"
       ],
       "js": [
-        "/js/ext.js",
+        "/js/meta.js",
         "/js/lib.js",
         "/js/settings.js",
+        "js/stats.js",
         "/js/range.js",
         "/js/matcher.js",
         "/js/fly.js",
-        "/js/flytype.js"
+        "/js/dom.js"
       ],
       "css": [
         "css/flytype.css"
@@ -46,14 +48,13 @@
       "run_at": "document_end"
     }
   ],
-  "options_page": "/html/options.html",
+  "options_page": "/page/options.html",
   "options_ui": {
-    "page": "/html/options.html",
+    "page": "/page/options.html",
     "open_in_tab": true
   },
   "browser_action": {
-    "default_icon": "/png/flytype-19.png",
     "default_title": "FlyType",
-    "default_popup": "/html/popup.html"
+    "default_popup": "/page/popup.html"
   }
 }
