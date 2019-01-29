@@ -13,13 +13,8 @@
 
 var DEBUG = !false;
 var SPECIAL_KEY_TEST = false;
-var DEBUG_ALWAYS_ON = false;
 
-var CSS_EDIT_ON = "flytype_160417_edit_on";
-// Add more than one class to increase specificity
-var CSS_TAG_CLASSES = ["flytype_160417_tag", "flytype_270318_tag"];
-var CSS_LI = "flytype_270318_li";
-var CSS_LI_PRESELECTED = "flytype_160417_preselected";
+
 
 
 var TAG_POPUP_WAIT = 1750;

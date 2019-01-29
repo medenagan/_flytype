@@ -11,17 +11,76 @@
 
  "use strict";
 
-(function () {
+var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
-  if (typeof global === "undefined") window.global = window; // FIXME DEBUG OUTSIDE EXT
+  console.log(self);
 
-//////// FIXME  if (global.ngram) return;
+  var global = (typeof window !== "undefined") ?
+    window :
+    self;
 
-  var _ngram = global.ngram = {};
+  var indexedDB = global.indexedDB;
+
+  var ngram = {};
+
+  // {myFunction: [param0, param1, callback]}
+  function computeFromMessage(message, callback) {
+
+    var name = Object.keys(message)[0];
+
+    if (typeof ngram[name] === "function") {
+
+      var fn = ngram[name];
+      var params = message[name];
+
+      if (! Array.isArray(params))
+        params = [params];
+
+      fn.apply(this, params.slice(0, fn.length - 1).concat(callback));
+    }
+    else {
+      console.log("BO000H");
+      callback({request: message, result: {error: true, reason: "Unrecognized"}});
+    }
+  }
+
+  ngram.isWorker = (typeof WorkerGlobalScope !== "undefined" && global instanceof WorkerGlobalScope);
+
+  if (ngram.isWorker) {
+    // {myFunction: [param0, param1, callback]}
+    global.addEventListener("message", function (e) {
+
+      var message = e.data;
+      var name = Object.keys(message)[0];
+
+      if (typeof ngram[name] === "function") {
+
+        var fn = ngram[name];
+        var params = message[name];
+
+        if (! Array.isArray(params)) {
+          params = [params];
+        }
+
+        params.slice(0, fn.length - 1);
+
+        params.push(postMessage);
+
+        fn.apply(this, params);
+      }
+      else {
+        console.log("BO000H");
+        postMessage({request: message, result: {error: true, reason: "Unrecognized"}});
+      }
+    });
+  }
+
+
+
 
   // Exports
-  _ngram.excerptText = _excerptText;
-  _ngram.flush = _flush;
+  ngram.excerptText = _excerptText;
+  ngram.flush = _flush;
 
   var _db;
 
@@ -42,7 +101,7 @@
   const INDEX_WEIGHT = "weight_c";
 
   // Open the database GRAMS 1
-  var DBOpenRequest = window.indexedDB.open(DB_SPECS.NAME, DB_SPECS.VERSION);
+  var DBOpenRequest = indexedDB.open(DB_SPECS.NAME, DB_SPECS.VERSION);
   console.log("second line", DB_SPECS.VERSION);
 
   // these event handlers act on the database being opened.
@@ -68,7 +127,7 @@
     };
 
 
-    var gSchema; var firstCreation = ! dbToUpdate.objectStoreNames.contains(G_SCHEMA);
+    var gSchema; var firstCreation = !dbToUpdate.objectStoreNames.contains(G_SCHEMA);
 
     if (firstCreation) {
       gSchema = dbToUpdate.createObjectStore(G_SCHEMA, {keyPath: "key"});
@@ -137,7 +196,7 @@
        json: true, // export to json
    */
 
-  _ngram.getInfo = function (options, callback) {
+  ngram.getInfo = function (options, callback) {
     if ( ! (callback instanceof Function)) return;
 
     if (! _db) {
@@ -489,9 +548,9 @@
     };
   }
 
-  _ngram.getNPlusOneGrams = _getNPlusOneGrams;
+  ngram.getNPlusOneGrams = _getNPlusOneGrams;
 
-  _ngram.niceGetNPlusOneGrams = function (text, callback) {
+  ngram.niceGetNPlusOneGrams = function (text, callback) {
      // "  This  is   1  text?  " => ["this", "is", "text"]
     _getNPlusOneGrams((text.match(REGEX_WORD_G) || []).map(function (m) {return m.toLowerCase()}), callback);
   };
@@ -514,7 +573,7 @@
 
   function toBlobFile (text) {
     var blob = new Blob([text], {type: "text/csv;charset=utf-8;"}); // Does not save without csv, for example application/json not working
-    window.open(URL.createObjectURL(blob));
+    global.open(URL.createObjectURL(blob));
   }
 
 
@@ -522,7 +581,10 @@
     _write(text.split(" "), 1);
   }
 
-  window.write = write;
+  ngram.write = write;
+
+  return ngram;
+
 })();
 
 

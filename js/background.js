@@ -23,6 +23,13 @@ var ICONS = {}, ICONS_PAUSED = {};
 // Provide async word matching
 var wkMatcher = new Worker("js/matcherThread.js");
 
+
+var ngramWorker = new Worker("js/ngramDB.js");
+
+ngramWorker.onmessage = function (result) {
+  console.log("Worker says", result);
+};
+
 function setIcon() {
   meta.chrome.browserAction.setIcon({
     path: (settings.paused ? ICONS_PAUSED : ICONS)
@@ -50,6 +57,8 @@ meta.chrome.contextMenus.onClicked.addListener(function(info, tab) {
 //example of using a message handler from the inject scripts
 meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
+  console.log(request);
+
   if (request.matcher) {
     var channel = new MessageChannel();
     channel.port1.onmessage = function (e) {
@@ -73,6 +82,18 @@ meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse
       ngram.getInfo(request.ngram.getInfo, sendResponse);
       return true; // asynch
     }
+  }
+
+  else if (request.nice1) {
+    console.log("LLLL");
+    ngram.niceGetNPlusOneGrams(request.nice1, sendResponse)
+    return true;
+  }
+
+  else if (request.nice2) {
+    ngramWorker.onmessage = sendResponse;
+    ngramWorker.postMessage({niceGetNPlusOneGrams: request.nice2});
+    return true;
   }
 
   else if (request.loadDictionary) {

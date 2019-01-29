@@ -12,7 +12,7 @@
 "use strict";
 
 document.getElementById("options").addEventListener("click", function (e) {
-  meta.chrome.openOptionsPageNow();
+  meta.chrome.runtime.openOptionsPage();
 });
 
 document.getElementById("settings").addEventListener("click", function (e) {

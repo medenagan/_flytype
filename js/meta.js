@@ -25,19 +25,22 @@ var meta = (typeof meta !== "undefined") ? meta : (function (root) {
   // browser = Edge, Firefox (native)
   meta.chrome = (typeof chrome !== "undefined") ? chrome : browser;
 
-  // Set the __proto__ as .chrome, so we can redefine some methods safely
-  //var meta.chrome = root.meta.chrome = _chrome; //chrome // FIXME Object.create(_chrome);  https://github.com/Rob--W/webextension-polyfill/commit/1ed579f2a2956eab2f99b795f0abea5b99171a2c
+  var runtime = meta.chrome.runtime;
 
   // openOptionsPage()
   // YES: Chrome, Opera, Firefox updated
   // NO: Edge, older versions
-  var _rt = meta.chrome.runtime;
-  // FIXME;
-  meta.chrome.openOptionsPageNow = (_rt.openOptionsPage instanceof Function) ? _rt.openOptionsPage :
-                                     (function () {
-                                       var manifest = meta.chrome.runtime.getManifest();
-                                       var url = (manifest.options_page) ? manifest.options_page : (manifest.options_ui && manifest.options_ui.page) ? manifest.options_ui.page : "error_options";
-                                       meta.chrome.tabs.create({'url': url});
-                                     });
+  if (typeof runtime.openOptionsPage !== "function") {
+    runtime.openOptionsPage = function () {
+      var manifest = runtime.getManifest();
+      var url = (manifest.options_page)
+        ? manifest.options_page
+        : (manifest.options_ui && manifest.options_ui.page)
+        ? manifest.options_ui.page
+        : "error_options";
+      meta.chrome.tabs.create({url: url});
+    }
+  }
+
   return meta;
 })();

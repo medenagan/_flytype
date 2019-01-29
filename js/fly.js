@@ -9,25 +9,30 @@
  *
  */
 
+var CSS_PREFIX = "flytype_160417_";
+var CSS_TAG_CLASS = CSS_PREFIX + "tag";
+var CSS_EDIT_ON = CSS_PREFIX + "edit_on";
+var CSS_PRESELECTED = CSS_PREFIX + "preselected";
+
+var DEBUG_ALWAYS_ON = false;
 
 function Fly() {
   var mySelf = this;
 
-  var tag = new CSuggestionsTag();
+  var ul = new SuggestionTag();
 
-  var _disabled = false;
+
+  var _lastAnatomy;
 
   var hasReplaced;
 
-  this.show = tag.show;
-  this.shown = tag.shown;
-  this.hide = tag.hide;
-  this.selectNextSuggestion = tag.selectNextSuggestion;
-  this.selectPreviousSuggestion = tag.selectPreviousSuggestion;
+  this.show = ul.show;
+  this.shown = ul.shown;
+  this.hide = ul.hide;
+  this.selectNextSuggestion = ul.selectNextSuggestion;
+  this.selectPreviousSuggestion = ul.selectPreviousSuggestion;
 
   var _target;
-  var _lastAnatomy;
-
   Object.defineProperty(this, "target", {
     get () {
       return _target;
@@ -44,6 +49,7 @@ function Fly() {
     }
   });
 
+  var _disabled = false;
   Object.defineProperty(this, "disabled", {
     get () {
       return _disabled;
@@ -100,14 +106,12 @@ function Fly() {
 
   this.replace = function (options) {
 
-    ///if (edit.selectionEnd - edit.selectionStart > 1) return; FIXME
-
     if (_disabled) return;
 
     var anatomy = anatomizeCurrentWord(_target);
 
     options = options || {};
-    options.word = options.word || tag.getSelectedSuggestion();
+    options.word = options.word || ul.getSelectedSuggestion();
     if (! options.word) {
       console.error(".replace(): no word to insert, returning");
       return;
@@ -123,7 +127,6 @@ function Fly() {
     anatomy.wordRange.replaceText(options.word);
 
     return anatomy.word.levenshtein(options.word);
-
   };
 
   /*
@@ -173,12 +176,12 @@ function Fly() {
     //  console.log("STIAMO SHOWANDO", options.show);
 
       if (options.show && (anatomy === _lastAnatomy)) {
-				tag.setSuggestions(suggestions);
-				tag.show();
+				ul.setSuggestions(suggestions);
+				ul.show();
 
 				// Adjust position
-				//tag.moveNew.asynch(this, anatomy.wordRange); // anatomy.leftValue.length);
-				tag.moveNew.call(this, anatomy.wordRange);
+				//ul.moveNew.asynch(this, anatomy.wordRange); // anatomy.leftValue.length);
+				ul.moveNew.call(this, anatomy.wordRange);
       }
     }
   };
@@ -188,20 +191,18 @@ function Fly() {
 
 
 // A list of suggestions to display
-function CSuggestionsTag() {
+function SuggestionTag() {
 
   var mySelf = this;
 
-  var tag = document.createElement("ul");
+  var tag =  document.createElement("DIV");
+  var ul = document.createElement("UL");
+
+  tag.classList.add(CSS_TAG_CLASS);
+  tag.style.display = "none";
+  tag.appendChild(ul);
 
   var suggestionsList = []; var suggestionsIndex = 0; var suggestionsUserChosen;
-
-  CSS_TAG_CLASSES.forEach(function (c) {
-    tag.classList.add(c);
-  });
-
-  // Set main css properties
-  tag.style.display = "none";
 
   if (DEBUG_ALWAYS_ON) {
     this.show = function () {
@@ -272,7 +273,7 @@ function CSuggestionsTag() {
     // Set autohide
     if (ms)  autoHide = window.setTimeout(function () {
       tag.style.display = "none";
-      document.body.removeChild(tag);
+      document.body.removeChild(ul);
     }, ms);
   };
 
@@ -299,12 +300,12 @@ function CSuggestionsTag() {
     // Selected li
     var flytypeIndex = "" + suggestionsIndex;
     // Preselect a suggestion
-    tag.querySelectorAll("li").forEach(function (li) {
+    ul.querySelectorAll("li").forEach(function (li) {
       if (li.dataset.flytypeIndex === flytypeIndex) {
-        li.classList.add(CSS_LI_PRESELECTED);
+        li.classList.add(CSS_PRESELECTED);
       }
       else {
-        li.classList.remove(CSS_LI_PRESELECTED);
+        li.classList.remove(CSS_PRESELECTED);
       }
     });
   };
@@ -332,18 +333,17 @@ function CSuggestionsTag() {
       // Not chosen by user
       suggestionsUserChosen = false;
       // Delete
-      while (tag.firstChild) {
-        tag.removeChild(tag.firstChild);
+      while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
       }
       suggestionsList.forEach(function (s, j) {
         var li = document.createElement("li");
-        li.classList.add(CSS_LI);
         li.dataset.flytypeIndex = j;
         // Automatically selects the first
-        if (j === suggestionsIndex) li.classList.add(CSS_LI_PRESELECTED);
+        if (j === suggestionsIndex) li.classList.add(CSS_PRESELECTED);
         ///////////////li.onmouseover = liMouseOver;
         li.appendChild(document.createTextNode(s));
-        tag.appendChild(li);
+        ul.appendChild(li);
       });
     }
   };
@@ -365,7 +365,7 @@ function CSuggestionsTag() {
   };
 
   this.moveNew = function (range) {
-    // Check if the page removed the tag
+    // Check if the page removed the ul
     if (! tag.parentNode) {
       document.body.appendChild(tag);
     }
@@ -383,7 +383,7 @@ function CSuggestionsTag() {
     tag.style.lineHeight = (fontSize * 1.1) + "px";
 
     tag.style.left =  rect.left + "px";
-    tag.style.top = (rect.top - tag.offsetHeight) + "px";
+    tag.style.top = (rect.top - ul.offsetHeight) + "px";
 
 
    //  TODO got bottom if there is not space enighiut

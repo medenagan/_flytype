@@ -1,256 +1,246 @@
-/* Neutrilizer */
-ul.flytype_160417_tag.flytype_270318_tag,
-XULul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li,
-
-Xul.flytype_160417_tag.flytype_270318_tag::first-letter,
-Xul.flytype_160417_tag.flytype_270318_tag::first-line,
-Xul.flytype_160417_tag.flytype_270318_tag::selection,
-
-Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::first-letter,
-Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::first-line,
-Xul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li::selection{
-
-align-self : auto;
-alignment-baseline : auto;
-animation-delay : 0s;
-animation-direction : normal;
-animation-duration : 0s;
-animation-fill-mode : none;
-animation-iteration-count : 1;
-animation-name : none;
-animation-play-state : running;
-animation-timing-function : ease;
-backface-visibility : visible;
-background-attachment : scroll;
-background-blend-mode : normal;
-background-clip : border-box;
-background-color : rgba(0, 0, 0, 0);
-background-image : linear-gradient(to right bottom, white, rgba(255, 255, 255, 0.8));
-background-origin : padding-box;
-background-position-x : 0%;
-background-position-y : 0%;
-background-size : auto;
-baseline-shift : 0;
-border-style : none;
-border-width : 0px;
-border-radius : 0px;
-border-style : none;
-border-width : 0px;
-border-collapse : separate;
-border-image-outset : 0;
-border-image-repeat : stretch;
-border-image-slice : 100%;
-border-image-source : none;
-border-image-width : 1;
-box-sizing : content-box;
-break-after : auto;
-break-before : auto;
-break-inside : auto;
-caption-side : top;
-caret-color : rgb(0, 0, 0);
-clear : none;
-clip : auto;
-clip-path : none;
-clip-path : nonzero;
-color : rgb(0, 0, 0);
-color-interpolation : sRGB;
-color-interpolation-filters : linearRGB;
-color-rendering : auto;
-column-count : auto;
-column-fill : balance;
-column-gap : normal;
-column-rule-color : rgb(0, 0, 0);
-column-rule-style : none;
-column-rule-width : 0;
-column-span : all;
-column-width : auto;
-contain : none;
-counter-increment : none;
-counter-reset : none;
-cursor : auto;
-direction : ltr;
-display : block;
-dominant-baseline : auto;
-empty-cells : show;
-fill : rgb(0, 0, 0);
-fill-opacity : 1;
-fill-rule : nonzero;
-filter : ;
-flex-basis : auto;
-flex-direction : row;
-flex-grow : 0;
-flex-shrink : 1;
-flex-wrap : nowrap;
-float : none;
-flood-color : rgb(0, 0, 0);
-flood-opacity : 1;
-font-family : "Times New Roman";
-font-kerning : auto;
-font-size : 18px;
-font-style : normal;
-font-variant-caps : normal;
-font-variant-east-asian : normal;
-font-variant-ligatures : normal;
-font-variant-numeric : normal;
-font-weight : 400;
-grid-auto-columns : auto;
-grid-auto-flow : row;
-grid-auto-rows : auto;
-grid-column-end : auto;
-grid-column-gap : 0;
-grid-column-start : auto;
-grid-row-end : auto;
-grid-row-gap : 0;
-grid-row-start : auto;
-grid-template-areas : none;
-grid-template-columns : none;
-grid-template-rows : none;
-hyphens : manual;
-image-rendering : auto;
-isolation : auto;
-letter-spacing : normal;
-lighting-color : rgb(255, 255, 255);
-line-break : auto;
-line-height : normal;
-list-style-image : none;
-list-style-position : outside;
-list-style-type : disc;
-margin : 0px;
-marker-end : none;
-marker-mid : none;
-marker-start : none;
-mask : none;
-mask-type : luminance;
-max-height : none;
-max-width : none;
-min-height : 0;
-min-width : 0;
-mix-blend-mode : normal;
-object-fit : fill;
-object-position : 50% 50%;
-opacity : 1;
-order : 0;
-orphans : 2;
-outline-color : rgb(0, 0, 0);
-outline-offset : 0;
-outline-style : none;
-outline-width : 0;
-overflow-wrap : normal;
-overflow-x : visible;
-overflow-y : visible;
-padding : 0;
-perspective : none;
-perspective-origin : 50% 50%;
-pointer-events : auto;
-resize : none;
-scroll-behavior : auto;
-shape-rendering : auto;
-speak : normal;
-stop-color : rgb(0, 0, 0);
-stop-opacity : 1;
-stroke : none;
-stroke-dasharray : none;
-stroke-dashoffset : 0;
-stroke-linecap : butt;
-stroke-linejoin : miter;
-stroke-miterlimit : 4;
-stroke-opacity : 1;
-stroke-width : 1px;
-tab-size : 8;
-table-layout : auto;
-text-align : start;
-text-align-last : auto;
-text-anchor : start;
-text-decoration-color : rgb(0, 0, 0);
-text-decoration-line : none;
-text-decoration-style : solid;
-text-indent : 0;
-text-overflow : clip;
-text-rendering : auto;
-text-shadow : none;
-text-transform : none;
-text-underline-position : auto;
-touch-action : auto;
-transform : none;
-transform-origin : 50% 50% 0;
-transform-style : flat;
-transition-delay : 0s;
-transition-duration : 0s;
-transition-property : all;
-transition-timing-function : ease;
-unicode-bidi : normal;
-user-select : none;
-vertical-align : baseline;
-visibility : visible;
-white-space : normal;
-widows : 2;
-will-change : auto;
-word-break : normal;
-word-spacing : 0;
-overflow-wrap : normal;
-writing-mode : horizontal-tb;
-}
-
 /*
-::after	p::after	Insert something after the content of each <p> element
-::before	p::before	Insert something before the content of each <p> element
+ *  flytype.css (v) 1.0.0
+ *
+ *  Style sheet to be injected
+ *
+ *  This file is part of FlyType <https://github.com/medenagan/flytype>
+ *
+ *  Copyright (C) 2016-2019 Fabio Mereu
+ *
+ */
 
-*/
-
-
-
-
-ul.flytype_160417_tag.flytype_270318_tag {
-  position : fixed;
-  z-index : 2147483647;
-  background: rgba(255, 255, 255, 0.85);
-  background: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8));
-  color: black;
-
-  border: 1px solid rgba(0,0,0,0.3);
-  border-radius: 10px;
-  
-  box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.23);
-
-  font-family : "Lucida Grande", verdana, arial, helvetica, sans-serif;
-  font-size : 18px;
-
-  user-select: none;
+/* Neutralizer */
+div.flytype_160417_tag, div.flytype_160417_tag > ul {
+  align-self: auto !important;
+  alignment-baseline: auto !important;
+  animation-delay: 0s !important;
+  animation-direction: normal !important;
+  animation-duration: 0s !important;
+  animation-fill-mode: none !important;
+  animation-iteration-count: 1 !important;
+  animation-name: none !important;
+  animation-play-state: running !important;
+  animation-timing-function: ease !important;
+  backface-visibility: visible !important;
+  background-attachment: scroll !important;
+  background-blend-mode: normal !important;
+  background-clip: border-box !important;
+  background-color: rgba(0, 0, 0, 0) !important;
+  background-image: linear-gradient(to right bottom, white, rgba(255, 255, 255, 0.8)) !important;
+  background-origin: padding-box !important;
+  background-position-x: 0% !important;
+  background-position-y: 0% !important;
+  background-size: auto !important;
+  baseline-shift: 0 !important;
+  border-style: none !important;
+  border-width: 0px !important;
+  border-radius: 0px !important;
+  border-style: none !important;
+  border-width: 0px !important;
+  border-collapse: separate !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-image-slice: 100% !important;
+  border-image-source: none !important;
+  border-image-width: 1 !important;
+  box-sizing: content-box !important;
+  break-after: auto !important;
+  break-before: auto !important;
+  break-inside: auto !important;
+  caption-side: top !important;
+  caret-color: rgb(0, 0, 0) !important;
+  clear: none !important;
+  clip: auto !important;
+  clip-path: none !important;
+  clip-path: nonzero !important;
+  color: rgb(0, 0, 0) !important;
+  color-interpolation: sRGB !important;
+  color-interpolation-filters: linearRGB !important;
+  color-rendering: auto !important;
+  column-count: auto !important;
+  column-fill: balance !important;
+  column-gap: normal !important;
+  column-rule-color: rgb(0, 0, 0) !important;
+  column-rule-style: none !important;
+  column-rule-width: 0 !important;
+  column-span: all !important;
+  column-width: auto !important;
+  contain: none !important;
+  counter-increment: none !important;
+  counter-reset: none !important;
+  cursor: auto !important;
+  direction: ltr !important;
+  display: block !important;
+  dominant-baseline: auto !important;
+  empty-cells: show !important;
+  fill: rgb(0, 0, 0) !important;
+  fill-opacity: 1 !important;
+  fill-rule: nonzero !important;
+  filter: !important;
+  flex-basis: auto !important;
+  flex-direction: row !important;
+  flex-grow: 0 !important;
+  flex-shrink: 1 !important;
+  flex-wrap: nowrap !important;
+  float: none !important;
+  flood-color: rgb(0, 0, 0) !important;
+  flood-opacity: 1 !important;
+  font-family: "Times New Roman" !important;
+  font-kerning: auto !important;
+  font-size: 18px !important;
+  font-style: normal !important;
+  font-variant-caps: normal !important;
+  font-variant-east-asian: normal !important;
+  font-variant-ligatures: normal !important;
+  font-variant-numeric: normal !important;
+  font-weight: 400 !important;
+  grid-auto-columns: auto !important;
+  grid-auto-flow: row !important;
+  grid-auto-rows: auto !important;
+  grid-column-end: auto !important;
+  grid-column-gap: 0 !important;
+  grid-column-start: auto !important;
+  grid-row-end: auto !important;
+  grid-row-gap: 0 !important;
+  grid-row-start: auto !important;
+  grid-template-areas: none !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  hyphens: manual !important;
+  image-rendering: auto !important;
+  isolation: auto !important;
+  letter-spacing: normal !important;
+  lighting-color: rgb(255, 255, 255) !important;
+  line-break: auto !important;
+  line-height: normal !important;
+  list-style-image: none !important;
+  list-style-position: outside !important;
+  list-style-type: disc !important;
+  margin: 0px !important;
+  marker-end: none !important;
+  marker-mid: none !important;
+  marker-start: none !important;
+  mask: none !important;
+  mask-type: luminance !important;
+  max-height: none !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  mix-blend-mode: normal !important;
+  object-fit: fill !important;
+  object-position: 50% 50% !important;
+  opacity: 1 !important;
+  order: 0 !important;
+  orphans: 2 !important;
+  outline-color: rgb(0, 0, 0) !important;
+  outline-offset: 0 !important;
+  outline-style: none !important;
+  outline-width: 0 !important;
+  overflow-wrap: normal !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  padding: 0 !important;
+  perspective: none !important;
+  perspective-origin: 50% 50% !important;
+  pointer-events: auto !important;
+  resize: none !important;
+  scroll-behavior: auto !important;
+  shape-rendering: auto !important;
+  speak: normal !important;
+  stop-color: rgb(0, 0, 0) !important;
+  stop-opacity: 1 !important;
+  stroke: none !important;
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+  stroke-linecap: butt !important;
+  stroke-linejoin: miter !important;
+  stroke-miterlimit: 4 !important;
+  stroke-opacity: 1 !important;
+  stroke-width: 1px !important;
+  tab-size: 8 !important;
+  table-layout: auto !important;
+  text-align: start !important;
+  text-align-last: auto !important;
+  text-anchor: start !important;
+  text-decoration-color: rgb(0, 0, 0) !important;
+  text-decoration-line: none !important;
+  text-decoration-style: solid !important;
+  text-indent: 0 !important;
+  text-overflow: clip !important;
+  text-rendering: auto !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  text-underline-position: auto !important;
+  touch-action: auto !important;
+  transform: none !important;
+  transform-origin: 50% 50% 0 !important;
+  transform-style: flat !important;
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-property: all !important;
+  transition-timing-function: ease !important;
+  unicode-bidi: normal !important;
+  user-select: none !important;
+  vertical-align: baseline !important;
+  visibility: visible !important;
+  white-space: normal !important;
+  widows: 2 !important;
+  will-change: auto !important;
+  word-break: normal !important;
+  word-spacing: 0 !important;
+  overflow-wrap: normal !important;
+  writing-mode: horizontal-tb !important;
 }
 
-ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li {
-  height: 100%;
-  max-height: 100%;
-  min-height: 100%;
-  display: inline-block;
-  padding: 10px 3px;
-  cursor: pointer;
+/* Actual style */
+
+div.flytype_160417_tag {
+  position: fixed !important;
+  z-index: 2147483647 !important;
 }
 
-ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li:nth-child(2n+1) {
-  background-color: rgba(0, 0, 0, 0.09);
+div.flytype_160417_tag > ul {
+  background: rgba(255, 255, 255, 0.85) !important;
+  background: linear-gradient(to bottom right, white, hsla(0, 0%, 100%, .8)) !important;
+  color: black !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
+  border-radius: 10px !important;
+  box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.23) !important;
+  font-family: "Lucida Grande", verdana, arial, helvetica, sans-serif !important;
+  font-size: 18px !important;
+  user-select: none !important;
 }
 
-ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li.flytype_160417_preselected {
-  background: hsl(200, 40%, 80%);
-  color: white;
-  text-shadow: rgba(0, 0, 0, 0.85) 1px 1px 0.5px;
-  border-radius: 2px;
+div.flytype_160417_tag > ul > li {
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 100% !important;
+  display: inline-block !important;
+  padding: 10px 3px !important;
+  cursor: pointer !important;
 }
 
-ul.flytype_160417_tag.flytype_270318_tag:empty {
-  display: none;
+div.flytype_160417_tag > ul > li:nth-child(2n+1) {
+  background-color: rgba(0, 0, 0, 0.09) !important;
 }
 
-ul.flytype_160417_tag.flytype_270318_tag > li.flytype_270318_li + li.flytype_270318_li {
-  margin-left: 5px;
+div.flytype_160417_tag > ul > li.flytype_160417_preselected {
+  background: hsl(200, 40%, 80%) !important;
+  color: white !important;
+  text-shadow: rgba(0, 0, 0, 0.85) 1px 1px 0.5px !important;
+  border-radius: 2px !important;
+}
+
+div.flytype_160417_tag > ul:empty {
+  display: none !important;
+}
+
+div.flytype_160417_tag > ul > li+li {
+  margin-left: 5px !important;
 }
 
 .flytype_160417_edit_on {
-  box-shadow: inset #9ee7ef 0 0 15px 0px;
-  border: 1px solid blue;
-  border-radius: 2px;
+  box-shadow: inset #9ee7ef 0 0 15px 0px !important;
+  border: 1px solid blue !important;
+  border-radius: 2px !important;
 }
-
-
-
