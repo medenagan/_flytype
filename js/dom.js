@@ -45,11 +45,6 @@ meta.chrome.runtime.onMessage.addListener(onMessage);
 
 INSTRUCTIONS:
 
-1. Press ESC to hide suggestions on that word
-2. Press SPACE to accept the suggestion
-2b. Press "." "," "!" "?" to accept the suggestion
-3. Press ARROWS LEFT, TOP to preselect previous suggestion
-4. Press ARROWS RIGHT, BOTTOM to preselect following suggestion
 
 */
 
