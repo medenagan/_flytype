@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
-  <title>FlyType Options</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/jquery.mobile/jquery.mobile-1.4.5.min.css">
+  <link rel="stylesheet" href="/css/options.css">
+  <title>FlyType Options</title>
   <script src="/jquery.mobile/jquery-2.1.4.min.js"></script>
   <script src="/jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
   <script src="/js/meta.js"></script>
@@ -13,429 +15,143 @@
   <script src="/js/ngramDB.js"></script>
   <script src="/js/settings.js"></script>
   <script src="/js/options.js"></script>
-  <style>
-    .noshadow * {
-      -webkit-box-shadow: none !important;
-      -moz-box-shadow: none !important;
-      box-shadow: none !important;
-    }
-    form.ui-mini .ui-field-contain fieldset.ui-controlgroup legend small {
-      color: #666;
-    }
-    form.progress input,
-    form.progress .ui-slider-handle {
-      display: none;
-    }
-
-    form.progress .ui-slider-track {
-      margin-left: 5px;
-      margin-top: 5px;
-    }
-
-    #db-table th, #db-table td {
-      text-align: center;
-    }
-  </style>
 </head>
+
 <body>
-<div data-role="page" id="testpage">
-  <div data-role="header" data-position="fixed">
-    <h1>FlyType</h1>
-  </div><!-- /header -->
-
-  <div class="ui-content" role="main">
-
-<div data-role="tabs" id="tabs" style="min-width:20em; max-width:50em; margin: 0 auto;">
-  <div data-role="navbar">
-    <ul>
-      <li><a href="#options" class="ui-btn-active" data-ajax="false">Options</a></li>
-      <li><a href="#stats" data-ajax="false">Stats</a></li>
-      <li><a href="#grambase" data-ajax="false">Grambase</a></li>
-      <li><a href="#about" data-ajax="false">About</a></li>
-    </ul>
-  </div>
-  <div id="options" class="ui-body-d ui-content">
-    <h2>Here we show the options</h1>
-    <div data-role="collapsible" data-collapsed="false" data-content-theme="a">
-      <h4>Typing</h4>
-      <p>I'm the collapsible content with a themed content block set to "<span class="theme">a</span>".</p>
-      <div class="ui-field-contain">
-        <p><small>blabla</small></p>
-        <input type="checkbox" name="checkbox-a" id="checkbox-a">
-        <label for="checkbox-a" title="ciao">Capitalize at the beginning of a sentence <small>smaller info</small></label>
-        <input type="checkbox" name="checkbox-b" id="checkbox-b">
-        <label for="checkbox-b">Two</label>
-        <input type="checkbox" name="checkbox-X" id="checkbox-c">
-        <label for="checkbox-c">Three</label>
-      </div>
+  <div data-role="page">
+    <div data-role="header" data-position="fixed">
+      <h1>FlyType</h1>
     </div>
 
-    <div data-role="collapsible" data-collapsed="false" data-content-theme="a">
-      <h4>Appearance</h4>
-      <p>When a word is being typed, show suggestions:</p>
-      <fieldset data-role="controlgroup">
-        <input type="radio" name="radio-popup-vertical" id="radio-popup-vertical-above">
-        <label for="radio-popup-vertical-above">Above</label>
-        <input type="radio" name="radio-popup-vertical" id="radio-popup-vertical-below" checked>
-        <label for="radio-popup-vertical-below">Below</label>
-      </fieldset>
-      <p>Align the popup:</p>
-      <fieldset data-role="controlgroup">
-        <input type="radio" name="radio-align-horizontal" id="radio-align-horizontal-character">
-        <label for="radio-align-horizontal-character">to the cursor</label>
-        <input type="radio" name="radio-align-horizontal" id="radio-align-horizontal-word" checked>
-        <label for="radio-align-horizontal-word">to the active word</label>
-      </fieldset>
-      <p>Keep suggestions shown for:</p>
-        <input type="range" name="slider-popup-wait" id="slider-popup-wait" value="1.75" step="0.25" min="1" max="8" data-highlight="true">
-        <label for="slider-popup-wait"><small>seconds</small></label>
-    </div>
+    <div class="ui-content" role="main" id="content">
 
-    <div data-role="collapsibleset" data-content-theme="a">
-      <div data-role="collapsible">
-        <h3>Section 1</h3>
-      <p>I'm the collapsible content for section 1</p>
-      </div>
-      <div data-role="collapsible">
-        <h3>Section 2</h3>
-      <p>I'm the collapsible content for section 2</p>
-      </div>
-      <div data-role="collapsible">
-        <h3>Section 3</h3>
-      <p>I'm the collapsible content for section 3</p>
-      </div>
-    </div>
-  </div>
+      <div data-role="tabs" id="tabs">
 
-  <div id="stats" class="ui-body-d ui-content">
-    <h2>Stats</h2>
-    <ul data-role="listview" data-inset="true">
-      <li>Replaced words<span class="ui-li-count" id="stats-replaced-words"></span></li>
-      <li>Pressed keys<span class="ui-li-count" id="stats-pressed-keys"></span></li>
-      <li>Saved keys<span class="ui-li-count" id="stats-saved-keys"></span></li>
-      <!-- li data-role="list-divider">Divider<span class="ui-li-count">3</span></li -->
-    </ul>
-    <div class="ui-field-contain">
-      <input type="button" id="clear-stats" title="Erase all stats" value="Clear all">
-    </div>
-  </div>
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#settings" class="ui-btn-active" data-ajax="false">Settings</a></li>
+            <li><a href="#stats" data-ajax="false">Stats</a></li>
+            <li><a href="#grambase" data-ajax="false">Grambase</a></li>
+            <li><a href="#about" data-ajax="false">About</a></li>
+          </ul>
+        </div>
 
-  <div id="grambase" class="ui-body-d ui-content">
-    <h2>Db</h2>
-    <p>DAta collected</p>
+        <div id="settings" class="ui-body-d ui-content">
+          <div data-role="collapsible" data-collapsed="false" data-content-theme="a">
+            <h4>Typing</h4>
+            <div class="ui-field-contain">
+              <input type="checkbox" name="checkbox-a" id="checkbox-a">
+              <label for="checkbox-a" title="ciao">Capitalize at the beginning of a sentence <small>smaller info</small></label>
+              <input type="checkbox" name="checkbox-b" id="checkbox-b">
+              <label for="checkbox-b">Two</label>
+              <input type="checkbox" name="checkbox-X" id="checkbox-c">
+              <label for="checkbox-c">Three</label>
+            </div>
+          </div>
 
-    <adiv class="ui-field-contain" id="opt-lucrezia">
-      <fieldset data-role="controlgroup" data-type="horizontal">
-        <label for="radioNGramOn">On</label>
-        <input type="radio" name="a" id="radioNGramOn" checked>
-        <label for="radioNGramOff">Off</label>
-        <input type="radio" name="a" id="radioNGramOff">
-        <legend>Build personalized suggestions based on what I type<br>
-          <small>FlyType doesn't use encryption. Data are stored offline on your hard disk.<br>
-            Don't use in a shared computed</small>
-        </legend>
-      </fieldset>
-      <legend>Build personalized suggestions based on what I type<br>
-        <small>FlyType doesn't use encryption. Data are stored offline on your hard disk.<br>
-          Don't use in a shared computed</small>
-      </legend>
-    </adiv>
+          <div data-role="collapsible" data-collapsed="false" data-content-theme="a">
+            <h4>Appearance</h4>
+            <p>When a word is being typed, show suggestions:</p>
+            <fieldset data-role="controlgroup">
+              <input type="radio" name="radio-popup-vertical" id="radio-popup-vertical-above">
+              <label for="radio-popup-vertical-above">Above</label>
+              <input type="radio" name="radio-popup-vertical" id="radio-popup-vertical-below" checked>
+              <label for="radio-popup-vertical-below">Below</label>
+            </fieldset>
+            <p>Align the popup:</p>
+            <fieldset data-role="controlgroup">
+              <input type="radio" name="radio-align-horizontal" id="radio-align-horizontal-character">
+              <label for="radio-align-horizontal-character">to the cursor</label>
+              <input type="radio" name="radio-align-horizontal" id="radio-align-horizontal-word" checked>
+              <label for="radio-align-horizontal-word">to the active word</label>
+            </fieldset>
+            <p>Keep suggestions shown for:</p>
+            <input type="range" name="slider-popup-wait" id="slider-popup-wait" value="1.75" step="0.25" min="1" max="8" data-highlight="true">
+            <label for="slider-popup-wait"><small>seconds</small></label>
+          </div>
 
-    <table data-role="table" id="db-table" data-mode="reflow" class="ui-responsive table-stroke" style="text-align: center;">
-      <thead class="ui-table-cell-label">
-        <tr>
-          <th data-priority="1" class="ui-bar ui-bar-a" title="The number of words composing each segment">n-gram</th>
-          <th data-priority="persist" class="ui-bar ui-bar-a" title="How many uniq segments have been collected">Count</th>
-          <th data-priority="2" class="ui-bar ui-bar-a" title="How many non-uniq segments have been recorded">Occurrences</div></th>
-          <th data-priority="3" class="ui-bar ui-bar-a" title="The lowest frequency of a uniq segment">Lowest</abbr></th>
-          <th data-priority="4" class="ui-bar ui-bar-a" title="The highest frequency of a uniq segment">Highest</th>
-          <th data-priority="4" class="ui-bar ui-bar-b">Coverage</th>
+        </div>
+
+        <div id="stats" class="ui-body-d ui-content">
+          <h2>Stats</h2>
+          <ul data-role="listview" data-inset="true">
+            <li>Replaced words<span class="ui-li-count" id="stats-replaced-words"></span></li>
+            <li>Pressed keys<span class="ui-li-count" id="stats-pressed-keys"></span></li>
+            <li>Saved keys<span class="ui-li-count" id="stats-saved-keys"></span></li>
+            <!-- li data-role="list-divider">Divider<span class="ui-li-count">3</span></li -->
+          </ul>
+          <div class="ui-field-contain">
+            <input type="button" id="clear-stats" title="Erase all stats" value="Clear all">
+          </div>
+        </div>
+
+        <div id="grambase" class="ui-body-d ui-content">
+          <h2>Db</h2>
+          <p>DAta collected</p>
+
+          <div class="ui-field-contain" id="opt-lucrezia">
+            <fieldset data-role="controlgroup" data-type="horizontal">
+              <legend>Build personalized suggestions based on what I type<br>
+                <small>FlyType doesn't use encryption. Data are stored offline on your hard disk.<br>
+                  Don't use in a shared computed</small>
+              </legend>
+              <label for="radioNGramOn">On</label>
+              <input type="radio" name="a" id="radioNGramOn" checked>
+              <label for="radioNGramOff">Off</label>
+              <input type="radio" name="a" id="radioNGramOff">
+            </fieldset>
+          </div>
+
+          <table data-role="table" id="db-table" data-mode="reflow" class="ui-responsive table-stroke" style="text-align: center;">
+            <thead class="ui-table-cell-label">
+              <tr>
+                <th data-priority="1" class="ui-bar ui-bar-a" title="The number of words composing each segment">n-gram</th>
+                <th data-priority="persist" class="ui-bar ui-bar-a" title="How many uniq segments have been collected">Count</th>
+                <th data-priority="2" class="ui-bar ui-bar-a" title="How many non-uniq segments have been recorded">Occurrences
+        </div>
+        </th>
+        <th data-priority="3" class="ui-bar ui-bar-a" title="The lowest frequency of a uniq segment">Lowest</th>
+        <th data-priority="4" class="ui-bar ui-bar-a" title="The highest frequency of a uniq segment">Highest</th>
+        <th data-priority="4" class="ui-bar ui-bar-b">Coverage</th>
         </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="ui-body ui-body-a">Data being updated...</td>
-        </tr>
-      </tbody>
-    </table>
-
-<div class="ui-field-contain">
-  <div data-role="rangeslider" data-track-theme="b" data-theme="b">
-    <label for="range-7a">Narrow by coverage:</label>
-    <input name="range-7a" id="range-7a" min="0" max="100" value="0" step=".01" type="range" />
-    <input name="range-7b" id="range-7b" min="0" max="100" value="10" step=".01" type="range" />
-  </div>
-</div>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ui-body ui-body-a">Data being updated...</td>
+          </tr>
+        </tbody>
+        </table>
 
 
+        <a href="#" class="ui-btn ui-corner-all">Anchor</a>
+        <button id="export-csv" class="ui-btn ui-corner-all">Export to csv</button>
+
+        <p>Scrape a text and learn new words</p>
+        <input id="gram-paste" placeholder="Please paste here the content to learn from..." style="text-align: center;" />
+        <p>Scrape from text or html (xml) files:</p>
+        <label for="gram-file">File:</label>
+        <input type="file" name="gram-file" id="gram-file" multiple>
+
+        <form class="progress transparent">
+              <input type="range" disabled="disabled" name="gram-file-progress" id="gram-file-progress" data-highlight="true" min="0" max="1" value="0">
+        </form>
 
 
+        <div data-role="popup" class="ui-content" id="popup-gram-paste-error" data-theme="b" data-position-to="#gram-paste" data-transition="turn" data-icon="arrow-alert">
+          <a href="#" class="ui-btn ui-btn-icon-notext ui-shadow ui-corner-all ui-btn-left ui-icon-delete" data-rel="back">Close</a>
+          <p id="label-gram-paste-error">...</p>
+        </div>
 
-
-
-	  <a href="#" class="ui-btn ui-corner-all">Anchor</a>
-	  <button id="export-csv" class="ui-btn ui-corner-all">Export to csv</button>
-
-    <p>Scrape a text and learn new words</p>
-    <input id="gram-paste" placeholder="Please paste here the content to learn from..." style="text-align: center;" />
-    <p>Scrape from text or html (xml) files:</p>
-    <label for="gram-file">File:</label>
-    <input type="file" name="gram-file" id="gram-file" value="" multiple>
-
-    <form class="progress transparent">
-      <input type="range" disabled="disabled" name="gram-file-progress" id="gram-file-progress" data-highlight="true" min="0" max="1" value="0">
-    </form>
-
-
-
-    <div data-role="popup" class="ui-content" id="popup-gram-paste-error" data-theme="b" data-position-to="#gram-paste" data-transition="turn" data-icon="arrow-alert">
-      <a href="#" class="ui-btn ui-btn-icon-notext ui-shadow ui-corner-all ui-btn-left ui-icon-delete" data-rel="back">Close</a>
-      <p id="label-gram-paste-error">...</p>
-    </div>
-
-  </div>
-  <div id="about" class="ui-body-d ui-content">
-    <h1>About me</h1>
-  </div>
-</div>
-
-
-
-<p><small>Altra roba</small></p>
-
-
-
-    <form class="ui-mini">
-      <div class="ui-field-contain" id="theme-selector">
-        <fieldset data-role="controlgroup" data-type="horizontal">
-          <legend>Theme:</legend>
-          <label for="a">A</label>
-          <input type="radio" name="theme" id="a" checked>
-          <label for="b">B</label>
-          <input type="radio" name="theme" id="b">
-        </fieldset>
       </div>
-      <div class="ui-field-contain" id="opt-navbars">
-        <fieldset data-role="controlgroup" data-type="horizontal">
-          <legend>Navbars:</legend>
-          <label for="show">Show</label>
-          <input type="radio" name="navbars" id="show" checked>
-          <label for="hide">Hide</label>
-          <input type="radio" name="navbars" id="hide">
-        </fieldset>
-      </div>
-      <div class="ui-field-contain" id="opt-shadow">
-        <fieldset data-role="controlgroup" data-type="horizontal">
-          <legend>Shadow:<br><small>Off: set the widget option shadow to false (data-shadow="false")</small></legend>
-          <label for="on">On</label>
-          <input type="radio" name="shadow" id="on" checked>
-          <label for="off">Off</label>
-          <input type="radio" name="shadow" id="off">
-        </fieldset>
-      </div>
-    </form>
-
-    <div id="ui-body-test" class="ui-body ui-body-a ui-corner-all" style="margin-bottom:1em;">
-    <p>I am a div with classes ui-body, ui-body-<span class="theme">a</span> and ui-corner-all.</p>
-    <p><a href="#">I am a link</a></p>
-      <h4>Panels</h4>
-      <a href="#panel-reveal" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-mini">Reveal</a>
-      <a href="#panel-overlay" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-mini">Overlay</a>
-      <a href="#panel-push" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-mini">Push</a>
-    </div>
-
-    <div id="ui-bar-test" class="ui-bar ui-bar-a ui-corner-all" style="margin-bottom:1em;">
-    <p>I am a div with classes ui-bar, ui-bar-<span class="theme">a</span> and ui-corner-all. <a href="#">I am a link</a></p>
-    </div>
-
-    <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-carat-r ui-btn-icon-right">We</a>
-    <button class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-carat-r ui-btn-icon-right">are</button>
-    <input type="button" value="buttons" data-inline="true" data-icon="carat-r" data-iconpos="right">
-
-    <ul data-role="listview" data-inset="true">
-      <li><a href="#">We</a></li>
-      <li data-role="list-divider">Divider</li>
-      <li><a href="#">have<span class="ui-li-count">4</span></a></li>
-      <li><a href="#">links</a></li>
-    </ul>
-
-    <ul data-role="listview" data-split-icon="gear" data-inset="true">
-      <li><a href="#">
-        <img src="../jquery.mobile/_assets/img/album-bb.jpg">
-      <h2>Broken Bells</h2>
-      <p>Broken Bells</p></a>
-        <a href="#purchase" data-rel="popup" data-position-to="window" data-transition="pop">Purchase album</a>
-      </li>
-      <li><a href="#">
-        <img src="../jquery.mobile/_assets/img/album-hc.jpg">
-      <h2>Warning</h2>
-      <p>Hot Chip</p></a>
-        <a href="#purchase" data-rel="popup" data-position-to="window" data-transition="pop">Purchase album</a>
-      </li>
-      <li><a href="#">
-        <img src="../jquery.mobile/_assets/img/album-bb.jpg">
-      <h2>Wolfgang Amadeus Phoenix</h2>
-      <p>Phoenix</p></a>
-        <a href="#purchase" data-rel="popup" data-position-to="window" data-transition="pop">Purchase album</a>
-      </li>
-    </ul>
-
-
-
-    <form>
-      <div class="ui-field-contain">
-        <label for="name2">Text Input:</label>
-        <input type="text" name="name2" id="name2" value="" data-clear-btn="true">
-      </div>
-      <div class="ui-field-contain">
-        <label for="textarea2">Textarea:</label>
-        <textarea cols="40" rows="8" name="textarea2" id="textarea2"></textarea>
-      </div>
-      <div class="ui-field-contain">
-        <label for="flip2">Flip switch:</label>
-        <select name="flip2" id="flip2" data-role="flipswitch">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-        </select>
-      </div>
-      <div class="ui-field-contain">
-        <label for="slider2">Slider:</label>
-        <input type="range" name="slider2" id="slider2" value="0" min="0" max="100" data-highlight="true">
-      </div>
-      <div class="ui-field-contain">
-        <fieldset data-role="controlgroup">
-          <legend>Checkbox:</legend>
-          <input type="checkbox" name="checkbox-v-1a" id="checkbox-v-1a">
-          <label for="checkbox-v-1a">One</label>
-          <input type="checkbox" name="checkbox-v-1b" id="checkbox-v-1b">
-          <label for="checkbox-v-1b">Two</label>
-          <input type="checkbox" name="checkbox-v-1c" id="checkbox-v-1c">
-          <label for="checkbox-v-1c">Three</label>
-        </fieldset>
-      </div>
-      <div class="ui-field-contain">
-        <fieldset data-role="controlgroup">
-          <legend>Radio:</legend>
-          <input type="radio" name="radio-v-1" id="radio-v-1a" checked>
-          <label for="radio-v-1a">One</label>
-          <input type="radio" name="radio-v-1" id="radio-v-1b">
-          <label for="radio-v-1b">Two</label>
-          <input type="radio" name="radio-v-1" id="radio-v-1c">
-          <label for="radio-v-1c">Three</label>
-        </fieldset>
-      </div>
-      <div class="ui-field-contain">
-        <fieldset data-role="controlgroup" data-type="horizontal">
-          <legend>Controlgroup:</legend>
-          <button class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-right">One</button>
-          <input type="button" data-icon="back" data-iconpos="right" value="Two">
-          <a href="#" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-right">Three</a>
-        </fieldset>
-      </div>
-      <div class="ui-field-contain">
-        <label for="select-choice-1" class="select">Custom select:</label>
-        <select name="select-choice-1" id="select-choice-1" data-native-menu="false" multiple="multiple">
-          <option value="standard">Standard: 7 day</option>
-          <option value="rush">Rush: 3 days</option>
-          <option value="express">Express: next day</option>
-          <option value="overnight">Overnight</option>
-        </select>
-      </div>
-      <div class="ui-field-contain">
-        <label for="submit-1">Send form:</label>
-        <input type="submit" id="submit-1" value="Send">
-      </div>
-    </form>
-
-    <a href="#" class="ui-btn ui-corner-all ui-shadow ui-icon-gear ui-btn-icon-left ui-btn-active">Active button</a>
-
-    <p>Form inside static list:</p>
-
-    <form>
-      <ul data-role="listview" data-inset="true">
-        <li class="ui-field-contain">
-          <label for="name3">Text Input:</label>
-          <input type="text" name="name3" id="name3" value="" data-clear-btn="true">
-        </li>
-        <li class="ui-field-contain">
-          <label for="flip3">Slider flip switch:</label>
-          <select name="flip3" id="flip3" data-role="slider">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select>
-        </li>
-        <li class="ui-field-contain">
-        </li>
-      </ul>
-    </form>
-
-    <div id="ui-bar-form" class="ui-bar ui-bar-a">
-    <p>ui-bar-<span class="theme">a</span></p>
-      <div class="ui-field-contain">
-        <label for="name4">Text Input:</label>
-        <input type="text" name="name4" id="name4" value="" data-clear-btn="true">
-      </div>
-      <div class="ui-field-contain">
-        <label for="flip4">Flip switch:</label>
-        <select name="flip4" id="flip4" data-role="slider">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-        </select>
-      </div>
-      <div class="ui-field-contain">
-        <label for="slider4">Slider:</label>
-        <input type="range" name="slider4" id="slider4" value="0" min="0" max="100" data-highlight="true">
+      <div id="about" class="ui-body-d ui-content">
+        <h1>About me</h1>
       </div>
     </div>
-  </div><!-- /content -->
 
-  <div data-role="footer" data-position="fixed">
-    <div data-role="navbar">
-      <ul>
-        <li><a href="#">Menu item 1</a></li>
-        <li><a href="#" class="ui-btn-active ui-state-persist">Menu item 2</a></li>
-        <li><a href="#">Menu item 3</a></li>
-      </ul>
+    <div data-role="footer" data-position="fixed">
+      <h4>Footer</h4>
     </div>
-    <h4 style="display:none;">Footer</h4>
   </div>
-
-  <div data-role="panel" id="panel-reveal">
-    <ul data-role="listview">
-      <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-    </ul>
-    <br><br>
-    <button class="ui-btn ui-corner-all ui-shadow">Button</button>
-  </div>
-
-  <div data-role="panel" id="panel-overlay" data-display="overlay">
-    <ul data-role="listview">
-      <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-    </ul>
-    <br><br>
-    <button class="ui-btn ui-corner-all ui-shadow">Button</button>
-  </div>
-
-  <div data-role="panel" id="panel-push" data-display="push">
-    <ul data-role="listview">
-      <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-      <li><a href="#">List item</a></li>
-    </ul>
-    <br><br>
-    <button class="ui-btn ui-corner-all ui-shadow">Button</button>
-  </div>
-
-
-</div><!-- /page -->
-
-
 </body>
+
 </html>

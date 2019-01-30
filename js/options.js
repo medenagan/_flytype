@@ -1,5 +1,5 @@
 /*
- *  options.js (v) 0.0.1
+ *  options.js (v) 1.0.0
  *
  *  Helper to normalize .chrome and .runtime objects accross different browsers
  *
@@ -49,40 +49,11 @@ $(document).on("pagecreate", function() {
   var $clearStats = $("input#clear-stats");
 
 
-  $("#theme-selector input").on("change", function(event) {
-    var themeClass = $("#theme-selector input:checked").attr("id");
-    $("#testpage").removeClass("ui-page-theme-a ui-page-theme-b").addClass("ui-page-theme-" + themeClass );
-    $("#ui-body-test").removeClass("ui-body-a ui-body-b").addClass("ui-body-" + themeClass );
-    $("#ui-bar-test, #ui-bar-form").removeClass("ui-bar-a ui-bar-b").addClass("ui-bar-" + themeClass );
-    $(".ui-collapsible-content").removeClass("ui-body-a ui-body-b").addClass("ui-body-" + themeClass );
-    $(".theme").text( themeClass );
-  });
 
   $(".updatesettings input").on("change", function(e) {
     console.log("Settings changed");
   });
 
-  $("#opt-shadow input").on("change", function(event) {
-    if ($("#on").prop("checked")) {
-      $("#testpage").removeClass("noshadow");
-    }
-
-    else if ($("#off").prop("checked")) {
-      $("#testpage").addClass("noshadow");
-    }
-  });
-
-  $("#opt-navbars input").on("change", function(event) {
-    if ($("#show").prop("checked")) {
-      $("#testpage .ui-navbar").show();
-      $("#testpage .ui-footer h4").hide();
-    }
-
-    else if ($("#hide").prop("checked")) {
-      $("#testpage .ui-navbar").hide();
-      $("#testpage .ui-footer h4").show();
-    }
-  });
 
   $clearStats.click(function () {
     if (confirm("WARNING: This action can't be undone.\n\nAre you sure you want to clear all statistics?")) {

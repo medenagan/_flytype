@@ -1,5 +1,5 @@
 /*
- *  ngramScrapeThread.js (v) 0.0.1
+ *  ngramScrapeThread.js (v) 1.0.0
  *
  *  Helper to normalize .chrome and .runtime objects accross different browsers
  *

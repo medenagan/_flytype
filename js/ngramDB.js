@@ -1,5 +1,5 @@
 /*
- *  ngramDB.js (v) 0.0.1
+ *  ngramDB.js (v) 1.0.0
  *
  *  A binding to a local database memorizing n-grams
  *
@@ -102,7 +102,6 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
   // Open the database GRAMS 1
   var DBOpenRequest = indexedDB.open(DB_SPECS.NAME, DB_SPECS.VERSION);
-  console.log("second line", DB_SPECS.VERSION);
 
   // these event handlers act on the database being opened.
   DBOpenRequest.onerror = function(event) {
@@ -115,12 +114,10 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
   };
 
   DBOpenRequest.onupgradeneeded = function(event) {
-    console.log("Upgraded needed");
+    console.warn("Upgraded needed");
 
     var dbToUpdate = this.result;  // FIXME this? event
     var transaction = event.target.transaction;
-
-    console.log(dbToUpdate, dbToUpdate.objectStoreNames, dbToUpdate.objectStoreNames.contains("g1"));
 
     dbToUpdate.onerror = function(event) {
       console.error("Error loading database.");
@@ -344,7 +341,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 */
 
     transaction.onerror = function(event) {
-      console.error("transaction.onerror: duplicate?");
+      console.error("transaction.onerror: duplicate?", event);
     };
 
 
@@ -495,7 +492,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
       var ngrams = Object.keys(dict).map(function (k) {
         return {key: k.split("|"), count: dict[k]}
       });
-      console.log(n, ngrams);
+      console.log(n, ngrams.slice(0, 100));
       _writeList(n, ngrams);
     }
   }

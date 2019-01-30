@@ -39,13 +39,15 @@ function Fly() {
     },
 
     set(newTarget) {
-      if (_target) _target.classList.remove(CSS_EDIT_ON);
-      // If newTarget not passed, keep old target (used when some option changes)
-      _target = newTarget || _target;
+      if (_target)
+        _target.classList.remove(CSS_EDIT_ON);
+
+      _target = newTarget;
       // Avoid late async suggestions from being shown
       _lastAnatomy = null;
-      console.log("anatomy azzerata");
-      if (_target && !_disabled) _target.classList.add(CSS_EDIT_ON);
+
+      if (_target && !_disabled)
+        _target.classList.add(CSS_EDIT_ON);
     }
   });
 
@@ -172,9 +174,6 @@ function Fly() {
 		    });
 		  }
 
-      // displaying has a ms cost, so only do it when showing to user is necessary
-    //  console.log("STIAMO SHOWANDO", options.show);
-
       if (options.show && (anatomy === _lastAnatomy)) {
 				ul.setSuggestions(suggestions);
 				ul.show();
@@ -220,16 +219,13 @@ function SuggestionTag() {
 
   else {
 
-    var _showingRelay = new CRelay(_adjustTagVisibility);
+    var _showingRelay = new Relay(_adjustTagVisibility);
 
     function _adjustTagVisibility() {
-      /// FIXME TRUSTPILOT
-      //console.log("ADJUST VISIBILITY WAS DISABLED");
-      //return;
 
       var visibility = (_showingRelay.state && suggestionsList.length);
 
-  //    console.log("_adjustTagVisibility", _showingRelay.state, suggestionsList.length, "d:");
+    console.log("_adjustTagVisibility", _showingRelay.state, suggestionsList.length, "d:");
 
       if (visibility) {
         tag.style.display = "block";
@@ -242,7 +238,7 @@ function SuggestionTag() {
     }
 
     this.show = function () {
-      //console.log("Tag.show()");
+      console.log("Tag.show()");
       if (DEBUG_ALWAYS_ON) {
         _adjustTagVisibility(true);
       }
@@ -456,7 +452,7 @@ function anatomizeCurrentWord (node) {
   };
 
 
-function CRelay(callback, quietState) {
+function Relay(callback, quietState) {
   quietState = !! quietState;
 
   var _runningState = quietState;

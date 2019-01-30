@@ -1,59 +1,65 @@
-body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
-        margin: 0;
-        padding: 0;
-      }
+body
+{
+  font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-      ul.vertical {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-          width: 200px;
-          background-color: menu;
-      }
+ul
+{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  color: MenuText;
+  background-color: Menu;
+  user-select: none;
+}
 
-      ul.vertical li > a > img {
-          padding-right: 10px;
-      }
+ul a
+{
+  display: block;
+  text-decoration: none;
+  padding: 8px 0 8px 16px;
+}
 
-      ul.vertical li > a {
-          display: block;
-          color: menutext;
-          padding: 8px 0 8px 16px;
-          text-decoration: none;
-          cursor: pointer;
-      }
+ul > li.active
+{
+  cursor: pointer;
+}
 
-      ul.vertical li a:hover:not(.active) {
-          background-color: highlight;
-          color: white;
-      }
+ul > li.active:hover
+{
+  color: white;
+  background-color: Highlight;
+}
 
-      ul.vertical a.active {
-          background-color: #a4bdde; /* blue */
-          color: white;
-      }
+ul > li.inactive {
+  color: InactiveCaptionText;
+}
 
-      ul.gray {
-      border: 1px solid #e7e7e7;
-          background-color: #f3f3f3;
-      }
+ul > li img
+{
+  padding-right: 10px;
+}
 
-      ul.gray li a {
-          display: block;
-          color: #666;
-          text-align: center;
-          padding: 14px 16px;
-          text-decoration: none;
-      }
+ul > li img.hover
+{
+  display: none;
+}
 
-      ul.gray li a:hover:not(.active) {
-          background-color: #ddd;
-      }
+ul > li img.nohover
+{
+  display: inline;
+}
 
-      ul.gray li a.active {
-          color: white;
-          background-color: #008CBA;
-      }
+ul > li:hover img.hover
+{
+  display: inline;
+}
 
+ul > li:hover img.nohover
+{
+  display: none;
+}

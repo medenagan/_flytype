@@ -241,6 +241,6 @@ div.flytype_160417_tag > ul > li+li {
 
 .flytype_160417_edit_on {
   box-shadow: inset #9ee7ef 0 0 15px 0px !important;
-  border: 1px solid blue !important;
   border-radius: 2px !important;
+  border: 1px solid blue /*!important*/;  
 }

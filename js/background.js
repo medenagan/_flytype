@@ -51,10 +51,26 @@ meta.chrome.contextMenus.onClicked.addListener(function(info, tab) {
   }
 })
 
+meta.chrome.commands.onCommand.addListener(function(command) {
+  switch (command) {
+
+    // CTRL + SPACE  disable or enable flytype on the page
+    case "toggle":
+      settings.paused = !settings.paused;
+      break;
+
+    // ALT + X: show/hide suggestions FIXME
+    case "trigger":
+      meta.chrome.tabs.query({active: true}, function (tabs) {
+        tabs.forEach(function (tab) {
+          meta.chrome.tabs.sendMessage(tab.id, {trigger: true});
+        });
+      });
+      break;
+  }
+});
 
 
-
-//example of using a message handler from the inject scripts
 meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   console.log(request);

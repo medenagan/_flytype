@@ -1,0 +1,33 @@
+/*
+ *  options.css (v) 1.0.0
+ *
+ *  Style sheet to be injected
+ *
+ *  This file is part of FlyType <https://github.com/medenagan/flytype>
+ *
+ *  Copyright (C) 2016-2019 Fabio Mereu
+ *
+ */
+
+ form.ui-mini .ui-field-contain fieldset.ui-controlgroup legend small {
+   color: #666;
+ }
+ form.progress input,
+ form.progress .ui-slider-handle {
+   display: none;
+ }
+
+ form.progress .ui-slider-track {
+   margin-left: 5px;
+   margin-top: 5px;
+ }
+
+ #db-table th, #db-table td {
+   text-align: center;
+ }
+
+ #content {
+   min-width: 400px;
+   max-width: 800px;
+   margin: 0 auto;
+ }

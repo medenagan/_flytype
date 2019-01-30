@@ -5,17 +5,30 @@
     <title>FlyType Popup</title>
     <link rel="stylesheet" href="/css/popup.css">
   <body>
-    <img src="/png/flytype-48.png" />
-    <ul id=menu class=vertical>
-    <li><a class=active><img src="/png/flytype-48.png" />FlyType</a></li>
-    <li><a class=active>Prova uno</a></li>
-    <hr>
-    <li><a class=checkbox><img src="/png/english-16.png" />English</a></li>
-    <li><a class=checkbox><img src="/png/italian-16.png" />Italian</a></li>
-    <li><a id=options title="Check settings out">Options</a></li>
-    <li><a id=settings title="Settings">Test settings add</a></li>
-    <li><a id=settingsClear title="SettingsClear">Test settings clear</a></li>
-    <li>Prova tre</li>
+    <ul>
+      <li class=inactive>
+        <a>
+          <img class="nohover" src="/png/flytype-black-32.png">
+          <img class="hover" src="/png/flytype-32.png">
+          <span>FlyType</span>
+        </a>
+      </li>
+      <hr>
+      <li class=active>
+        <a id=options>
+          <img class="nohover" src="/png/gear-black-32.png">
+          <img class="hover" src="/png/gear-white-32.png">
+          <span title="Check settings">Options</span>
+        </a>
+      </li>
+
+      <li class=active>
+        <a id=visit>
+          <img class="nohover" src="/png/github-black-32.png">
+          <img class="hover" src="/png/github-white-32.png">
+          <span title="Visit source">Visit</span>
+        </a>
+      </li>
     </ul>
     <script src="/js/meta.js"></script>
     <script src="/js/popup.js"></script>

@@ -56,5 +56,19 @@
   "browser_action": {
     "default_title": "FlyType",
     "default_popup": "/page/popup.html"
+  },
+  "commands": {
+    "toggle": {
+      "suggested_key": {
+        "default": "Ctrl+Space"
+      },
+      "description": "Toggle FlyType on the page"
+    },
+    "trigger": {
+      "suggested_key": {
+        "default": "Alt+X"
+      },
+      "description": "Trigger or hide suggestions"
+    }
   }
 }

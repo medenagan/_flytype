@@ -64,12 +64,9 @@ var stats = (typeof stats !== "undefined") ? stats : (function () {
   function changed(amount) {
 
     counter += amount;
-    if (true || counter > 10) { // FIXMED
+    if (counter > 25) {
       saveStats();
       counter = 0;
-    }
-    else {
-      console.log("Counter is", counter)
     }
   }
 
@@ -124,8 +121,6 @@ var stats = (typeof stats !== "undefined") ? stats : (function () {
       });
 
       storageStats.updated = (new Date()).toJSON();
-
-      console.log("ABOUT TO SAVE", storageStats);
 
       storageArea.set({stats: storageStats}, function () {
         busy = false;
