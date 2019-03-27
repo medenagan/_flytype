@@ -11,7 +11,6 @@
 
 "use strict";
 
-var ID_MENU_PAUSE = "flytype-menu-pause";
 var WAIT_MINS_AUTO_FLUSH = 10.0;
 
 var ICONS = {}, ICONS_PAUSED = {};
@@ -20,15 +19,24 @@ var ICONS = {}, ICONS_PAUSED = {};
   ICONS_PAUSED[value] = "/png/flytype-paused-" + value + ".png";
 });
 
-// Provide async word matching
-var wkMatcher = new Worker("js/matcherThread.js");
+// Create a popup for editable
+var ID_MENU_PARENT = "flytype-menu-parent";
+var ID_MENU_PAUSE = "flytype-menu-pause";
+var menuContexts = ["editable"];
+var menuParentId;
 
+chrome.contextMenus.removeAll(function () {
+  menuParentId = meta.chrome.contextMenus.create({title: "FlyType", id: ID_MENU_PARENT, contexts: menuContexts});
+  meta.chrome.contextMenus.create({title: "Pause", id: ID_MENU_PAUSE,
+    parentId: menuParentId, type: "checkbox", contexts: menuContexts
+  });
+});
 
-var ngramWorker = new Worker("js/ngramDB.js");
-
-ngramWorker.onmessage = function (result) {
-  console.log("Worker says", result);
-};
+meta.chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  if (info.menuItemId === ID_MENU_PAUSE) {
+    settings.paused = info.checked;
+  }
+})
 
 function setIcon() {
   meta.chrome.browserAction.setIcon({
@@ -38,6 +46,10 @@ function setIcon() {
   meta.chrome.contextMenus.update(ID_MENU_PAUSE, {checked: settings.paused});
 }
 
+meta.chrome.runtime.onInstalled.addListener(function() {
+  console.log("onInstalled.");
+});
+
 settings.listen(function(oldData, newData) {
   if (oldData.paused !== newData.paused)
     setIcon();
@@ -45,11 +57,7 @@ settings.listen(function(oldData, newData) {
 
 settings.read(setIcon);
 
-meta.chrome.contextMenus.onClicked.addListener(function(info, tab) {
-  if (info.menuItemId === ID_MENU_PAUSE) {
-    settings.paused = info.checked;
-  }
-})
+
 
 meta.chrome.commands.onCommand.addListener(function(command) {
   switch (command) {
@@ -69,6 +77,21 @@ meta.chrome.commands.onCommand.addListener(function(command) {
       break;
   }
 });
+
+
+
+// Provide async word matching
+var wkMatcher = new Worker("js/matcherThread.js");
+
+
+var ngramWorker = new Worker("js/ngramDB.js");
+
+ngramWorker.onmessage = function (result) {
+  console.log("Worker says", result);
+};
+
+
+
 
 
 meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -123,19 +146,6 @@ meta.chrome.runtime.onMessage.addListener(function(request, sender, sendResponse
 
 
 
-meta.chrome.runtime.onInstalled.addListener(function() {
-  // Create a popup for editable
-  var menuContexts = ["editable"];
-  var menuParentId = meta.chrome.contextMenus.create({title: "FlyType", id: "flytype-menu-parent", contexts: menuContexts});
-  meta.chrome.contextMenus.create({title: "Pause", id: ID_MENU_PAUSE,
-    parentId: menuParentId, type: "checkbox", contexts: menuContexts
-  });
-
-  console.log("onInstalled.");
-   // chrome.browserAction.setBadgeText({text: ""});
-});
-
-
 
 
 
@@ -145,12 +155,6 @@ meta.chrome.runtime.onStartup.addListener(function() {
    // chrome.browserAction.setBadgeText({text: ""});
 });
 
-
-meta.chrome.runtime.onSuspend.addListener(function() {
-//  ngram.flush();
-  console.log("onSuspend / Unloading.");
-   // chrome.browserAction.setBadgeText({text: ""});
-});
 
 // Test of i
 var i = 0;

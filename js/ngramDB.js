@@ -1,7 +1,7 @@
 /*
  *  ngramDB.js (v) 1.0.0
  *
- *  A binding to a local database memorizing n-grams
+ *  Main module providing the global ngram object allowing memorizing n-grams into an indexDB
  *
  *  This file is part of FlyType <https://github.com/medenagan/flytype>
  *
@@ -9,9 +9,52 @@
  *
  */
 
- "use strict";
 
-var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
+"use strict";
+
+const BEING_WORKER = (typeof importScripts !== "undefined");
+const REGEX_WORD_G = /[A-Za-zÀ-ÖØ-öĀ-ſ]+(?:[-'][A-Za-zÀ-ÖØ-öĀ-ſ]+)?/g; // "abc" | "ab-c" | "a'bc"
+
+
+// Expecting lib.js already loaded if matcherThread is used as content script
+if (BEING_WORKER) {
+  importScripts("ngramDBCreate.js");
+  importScripts("ngramDBRead.js");
+}
+
+function ngramGetGlobalObject() {
+  console.log("First call");
+
+  // Use one DB_SPECS only
+  const DB_SPECS = ({
+    "1" : {NAME: "GRAMS", VERSION: 1, MAX_GRAM: 3},
+    "DEBUG" : {NAME: "GRAMS_DEBUG_jimbal", VERSION: 6, MAX_GRAM: 5}
+  })["DEBUG"];
+
+  var ngram = {
+      STORENAME_PREFIX: "g", // g5
+      STORENAME_REGEX: /^g\d+$/, //g0, g1, ...
+      DEFAULT_MAX_READING_RESULTS: 20,
+      DB_SPECS: DB_SPECS,
+      REGEX_WORD_SEPARATOR: REGEX_WORD_G
+  };
+
+  // Next calls return the same ngram object
+  ngramGetGlobalObject = function () {
+    console.log("second call", Date.now())
+    return ngram;
+  }
+
+
+  // Headers
+  const G_SCHEMA = "g_schema";
+
+
+
+
+
+
+
 
   console.log(self);
 
@@ -21,59 +64,32 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
   var indexedDB = global.indexedDB;
 
-  var ngram = {};
 
-  // {myFunction: [param0, param1, callback]}
-  function computeFromMessage(message, callback) {
 
-    var name = Object.keys(message)[0];
+  var promisedDb = ngramCreateDatabase();
 
-    if (typeof ngram[name] === "function") {
-
-      var fn = ngram[name];
-      var params = message[name];
-
-      if (! Array.isArray(params))
-        params = [params];
-
-      fn.apply(this, params.slice(0, fn.length - 1).concat(callback));
+  Object.defineProperty(ngram, "db", {
+    get () {
+      return promisedDb;
     }
-    else {
-      console.log("BO000H");
-      callback({request: message, result: {error: true, reason: "Unrecognized"}});
-    }
-  }
+  });
+
+  // Open or create the database
+
+  var _db;
+  var db;
+
+
+
+  promisedDb.then(function (db) {
+    db = _db = db;
+  }, console.error);
+
 
   ngram.isWorker = (typeof WorkerGlobalScope !== "undefined" && global instanceof WorkerGlobalScope);
 
-  if (ngram.isWorker) {
-    // {myFunction: [param0, param1, callback]}
-    global.addEventListener("message", function (e) {
 
-      var message = e.data;
-      var name = Object.keys(message)[0];
 
-      if (typeof ngram[name] === "function") {
-
-        var fn = ngram[name];
-        var params = message[name];
-
-        if (! Array.isArray(params)) {
-          params = [params];
-        }
-
-        params.slice(0, fn.length - 1);
-
-        params.push(postMessage);
-
-        fn.apply(this, params);
-      }
-      else {
-        console.log("BO000H");
-        postMessage({request: message, result: {error: true, reason: "Unrecognized"}});
-      }
-    });
-  }
 
 
 
@@ -82,108 +98,11 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
   ngram.excerptText = _excerptText;
   ngram.flush = _flush;
 
-  var _db;
-
-  // Use one DB_SPECS only
-  const DB_SPECS = ({
-    "1" : {NAME: "GRAMS", VERSION: 1, MAX_GRAM: 3},
-    "DEBUG" : {NAME: "GRAMS_DEBUG_jimbal", VERSION: 6, MAX_GRAM: 5}
-  })["DEBUG"];
-
-  const G_SCHEMA = "g_schema";
-
-  const NGRAM_STORENAME_PREFIX = "g" // g5;
-
-  const REGEX_WORD_G = /[A-Za-zÀ-ÖØ-öĀ-ſ]+(?:[-'][A-Za-zÀ-ÖØ-öĀ-ſ]+)?/g; // "abc" | "ab-c" | "a'bc"
-
-  const REGEX_NGRAM_STORENAME = new RegExp("^" + NGRAM_STORENAME_PREFIX + "(\\d+)$"); // /^g(\d+)$/
-
-  const INDEX_WEIGHT = "weight_c";
-
-  // Open the database GRAMS 1
-  var DBOpenRequest = indexedDB.open(DB_SPECS.NAME, DB_SPECS.VERSION);
-
-  // these event handlers act on the database being opened.
-  DBOpenRequest.onerror = function(event) {
-    console.error(DBOpenRequest.error);
-  };
-
-  DBOpenRequest.onsuccess = function(event) {
-    console.log("Database initialised.");
-    _db = DBOpenRequest.result;
-  };
-
-  DBOpenRequest.onupgradeneeded = function(event) {
-    console.warn("Upgraded needed");
-
-    var dbToUpdate = this.result;  // FIXME this? event
-    var transaction = event.target.transaction;
-
-    dbToUpdate.onerror = function(event) {
-      console.error("Error loading database.");
-    };
 
 
-    var gSchema; var firstCreation = !dbToUpdate.objectStoreNames.contains(G_SCHEMA);
 
-    if (firstCreation) {
-      gSchema = dbToUpdate.createObjectStore(G_SCHEMA, {keyPath: "key"});
-    }
 
-    else {
-      gSchema = transaction.objectStore(G_SCHEMA);
-    }
 
-    var now = new Date();
-
-    if (firstCreation) gSchema.put({key: "created", value: now});
-    gSchema.put({key: "updated", value: now});
-
-    // Build n-gram objectstores
-
-    // Add new n-gram store objects
-    for (var n = 1; n <= DB_SPECS.MAX_GRAM; n++) {
-      const storeName = "g" + n; // 3-gram => "g3"
-
-      // 3 => ["$0", "$1", "$2"]
-      const keys = (new Array(n)).fill("$").map(function(m, i) {
-        return m + i;
-      });
-
-      var objectStore;
-
-      if (dbToUpdate.objectStoreNames.contains(storeName)) {
-        objectStore = transaction.objectStore(storeName);
-      }
-
-      else {
-        objectStore = dbToUpdate.createObjectStore(storeName, {keyPath: keys});
-      }
-
-      if (! objectStore.indexNames.contains("n_minus_one")) {
-        // 3 => ["$0", "$1", c, "$2"]
-        const keysMinusOne = keys.slice();
-        keysMinusOne.splice(n - 1, 0, "c");
-        objectStore.createIndex("n_minus_one", keysMinusOne, {unique: false});
-      }
-
-      if (! objectStore.indexNames.contains("weight")) {
-        // 3 => [c, "$0", "$1", "$2"]
-        const keysWeight = keys.slice();
-        keysWeight.splice(0, 0, "c");
-        objectStore.createIndex("weight", keysWeight, {unique: false});
-      }
-
-      if (! objectStore.indexNames.contains("weight_c")) {
-        objectStore.createIndex("weight_c", "c", {unique: false});
-      }
-
-      if (! objectStore.indexNames.contains("weight_c_nonUNIQUE")) {
-        objectStore.createIndex("weight_c_nonUNIQUE", "c", {unique: false, multiEntry: true});
-      }
-
-    }
-  };
 
    /*
      {
@@ -214,7 +133,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
     // [1, 2, 3] n-gram
     storeNames.forEach(function (o){
-      var matched = o.match(REGEX_NGRAM_STORENAME);
+      var matched = o.match(STORENAME_REGEX);
       if (matched) {
         // n
         arrGram.push(+matched[1]);
@@ -247,7 +166,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
     };
 
     const KEYRANGE_GREATER_THAN_ZERO = IDBKeyRange.lowerBound(0, true);
- //   const KEYRANGE_GREATER_THAN_ZERO = IDBKeyRange.lowerBound(0, true);
+  //   const KEYRANGE_GREATER_THAN_ZERO = IDBKeyRange.lowerBound(0, true);
 
     arrGram.forEach(function (n) {
       var objStore = transaction.objectStore(NGRAM_STORENAME_PREFIX + n);
@@ -308,7 +227,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
           }
         });
       }
-/*
+  /*
       // Occurrencies count NEWWWWW
       var nIndex = objStore.index(INDEX_WEIGHT);
 
@@ -317,7 +236,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
         nDetail.count = e.target.result;
       };
 
- */
+  */
     });
   };
 
@@ -334,11 +253,11 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
     var transaction = db.transaction(storeName, "readwrite");
 
     // report on the success of opening the transaction
-/*
+  /*
     transaction.oncomplete = function(event) {
       console.log("Transaction completed: database modification finished.");
     };
-*/
+  */
 
     transaction.onerror = function(event) {
       console.error("transaction.onerror: duplicate?", event);
@@ -359,11 +278,11 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
       // Write on database
       var osPutRequest = objectStore.put(entry);
-/*
+  /*
       osPutRequest.onsuccess = function(event) {
         console.log("put with success", entry);
       };
-*/
+  */
 
       osPutRequest.onerror = function(event) {
         console.error("osPutRequest.onerror", osPutRequest.error);
@@ -373,7 +292,7 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
   }
 
 
- // write(n-gram, [{key: [string, string, ...], count: 1}]
+  // write(n-gram, [{key: [string, string, ...], count: 1}]
   function _writeList(n, list) {
     const storeName = "g" + n;
 
@@ -497,62 +416,6 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
     }
   }
 
-  // (["the", "first"]) => [ ["the", "first", "time"], ["the", "first", "thing"], ...] FIXME
-  function _getNPlusOneGrams(gram, callback) {
-
-    const MAX_RESULT = 20;
-
-    const storeName = "g" + (gram.length + 1);
-
-    const fromGram = gram.slice();
-    fromGram.push(1, "");
-
-    const toGram = gram.slice();
-    toGram.push(Infinity, "\uffff"),
-
-    console.log(fromGram, toGram);
-
-    const keyRangeValue = IDBKeyRange.bound(fromGram, toGram);
-
-    const transaction = _db.transaction(storeName);
-
-        var result = [];
-
-    transaction.oncomplete = function(event) {
-      console.log("Transaction completed");
-      console.log(result);
-      if (callback instanceof Function) callback({error: false, success: true, result: result})
-    };
-
-    transaction.onerror = function(event) {
-      console.error("Error in transaction");
-      if (callback instanceof Function) callback({error: true, success: false})
-    };
-
-
-    const objectStore = transaction.objectStore(storeName);
-                             // keyRangeValue
-
-    objectStore.index("n_minus_one").openCursor(keyRangeValue, "prev").onsuccess = function(event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        result.push(cursor.value);
-        if (result.length < MAX_RESULT) cursor.continue();
-      }
-      else {
-        console.log('Entries all displayed. or length too much');
-      }
-    };
-  }
-
-  ngram.getNPlusOneGrams = _getNPlusOneGrams;
-
-  ngram.niceGetNPlusOneGrams = function (text, callback) {
-     // "  This  is   1  text?  " => ["this", "is", "text"]
-    _getNPlusOneGrams((text.match(REGEX_WORD_G) || []).map(function (m) {return m.toLowerCase()}), callback);
-  };
-
-
 
   function aSplitNGram(source, n) {
 
@@ -582,7 +445,12 @@ var ngram = (typeof ngram !== "undefined") ? ngram : (function () {
 
   return ngram;
 
-})();
+
+
+}
+
+
+var ngram = ngramGetGlobalObject();
 
 
 

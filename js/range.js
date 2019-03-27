@@ -586,6 +586,8 @@ TextareaRange.prototype.highlight = function () {
 TextareaRange.prototype.replaceText = (function () {
   // Test the execCommand("insertText", ...) functionalities
   function testExecCommand(TAG) {
+    if (! document || ! document.body) return false;
+
     const TXT_MATCH = ".";
     // Try to keep track of focused element, preferably script should be executed at beginning
     var focusedElement = document.activeElement;
@@ -593,6 +595,7 @@ TextareaRange.prototype.replaceText = (function () {
     element.style.position = "fixed"; // Avoid any scrolling
     element.style.left = "-200px";
     element.style.top = "-200px";
+    console.log(document)
     document.body.appendChild(element);
     element.focus();
     // Double check
@@ -604,6 +607,10 @@ TextareaRange.prototype.replaceText = (function () {
     }
     return canExecCommand;
   }
+
+  // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769
+  //window.chrome && window.chrome.runtime
+
   return (testExecCommand("TEXTAREA") && testExecCommand("INPUT")) ?
     // The browser will simulate text insertion by user (they can undo actions)
     (function (text) {
@@ -673,6 +680,9 @@ TextareaRange.prototype.merge = function (range) {
 TextareaRange.prototype.getBoundingClientRect = (function () {
 // FIXME
 
+  var DIV = document.createElement("DIV");
+  var SPAN = document.createElement("SPAN");
+
   return function () {
 
     // Native object returned by getBoundingClientRect():
@@ -683,25 +693,34 @@ TextareaRange.prototype.getBoundingClientRect = (function () {
     // Empty range
     if (this._selectionStart === undefined) return {left: -1, top: -1, width: 0, height: 0, right: -1, bottom: -1};
 
-    console.time("getBoundingClientRect.var");
-
     // Create a mirrored div
-    var fauxDiv = document.createElement("DIV");
+    var fauxDiv = DIV // document.createElement("DIV");
     // Created a faux span to extract the client rect
-    var fauxSpan = document.createElement("SPAN");
-    console.timeEnd("getBoundingClientRect.var");
-
+    var rightSpan = SPAN // document.createElement("SPAN");
 
     console.time("getBoundingClientRect.editStyle");
 
     var editStyle = getComputedStyle(this._textBox);
+
     // Transfer the element's properties to the div
-    Object.assign(fauxDiv.style, editStyle);
-  //  Object.getOwnPropertyNames(editStyle).forEach(function (s) {
-  //    fauxDiv.style[s] = editStyle[s];
-  //  });
+
+    // Firefox: TypeError: "Proxy doesn't have an indexed property setter for '0'"
+    // Object.assign(fauxDiv.style, editStyle);
+
+    var properties = Object.getOwnPropertyNames(editStyle)
+      .filter(function(property) {
+        // Remove [0, 1, ...]
+        return /^\D/.test(property);
+    });
+
+    properties.forEach(function (s) {
+      fauxDiv.style[s] = editStyle[s];
+    });
 
     console.timeEnd("getBoundingClientRect.editStyle");
+
+console.log("zeta");
+
     // Set position off-screen
     fauxDiv.style.position = "absolute";
     fauxDiv.style.left = "-9999px";
@@ -731,6 +750,16 @@ TextareaRange.prototype.getBoundingClientRect = (function () {
       fauxDiv.style.overflow = "hidden";
     }
 
+
+/*
+        fauxDiv.style.left = "0px";
+        fauxDiv.style.top = "0px";
+        // not 'display: none' because we want rendering
+        fauxDiv.style.display = "block";
+        fauxDiv.style.visibility = "visible";
+
+*/
+
     // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
     // if (element.nodeName === 'INPUT') fauxDiv.textContent = fauxDiv.textContent.replace(/\s/g, '\u00a0'); FIXME
 
@@ -746,37 +775,34 @@ TextareaRange.prototype.getBoundingClientRect = (function () {
     }
 
     fauxDiv.textContent = leftValue;
-    fauxSpan.textContent = middleValue;
-    fauxDiv.appendChild(fauxSpan);
+    rightSpan.textContent = middleValue;
+    fauxDiv.appendChild(rightSpan);
     // For proper rendering, it needs to add right side.
     // Ex: "a| |word" vs "a| |verylongwordnonspacedsentence"
     // may be broken differently according to style rules
     fauxDiv.appendChild(document.createTextNode(rightValue));
+
     // fauxDiv needs being added to the body or it won't be rendered
-    document.body.appendChild(fauxDiv);
+    if (fauxDiv.parentElement !== document.body)
+      document.body.appendChild(fauxDiv);
 
 
-    // fauxSpan is the candidate for the bounding rect but must be translated
-//    console.time("getBoundingClientRect.fauxDiv.getBoundingClientRect");
+    // rightSpan is the candidate for the bounding rect but must be translated
+    console.time("getBoundingClientRect.fauxDiv.getBoundingClientRect");
     var fauxDivCoords = fauxDiv.getBoundingClientRect()
-//    console.timeEnd("getBoundingClientRect.fauxDiv.getBoundingClientRect");
- //   console.time("getBoundingClientRect.fauxSpan.getBoundingClientRect");
-    var fauxSpanCoords = fauxSpan.getBoundingClientRect();
- //   console.timeEnd("getBoundingClientRect.fauxSpan.getBoundingClientRect");
-//    console.time("getBoundingClientRect._textBox.getBoundingClientRect");
+   console.timeEnd("getBoundingClientRect.fauxDiv.getBoundingClientRect");
+    var rightSpanCoords = rightSpan.getBoundingClientRect();
     var textBoxCoords = this._textBox.getBoundingClientRect();
- //   console.timeEnd("getBoundingClientRect._textBox.getBoundingClientRect");
-    document.body.removeChild(fauxDiv);
 
-    // Translate coordinate system from fauxSpan to textBox, taking into account the scrolling
+    // Translate coordinate system from rightSpan to textBox, taking into account the scrolling
     var _left, _top;
     return {
-      left: _left = fauxSpanCoords.left + textBoxCoords.left - fauxDivCoords.left - this._textBox.scrollLeft,
-      top: _top = fauxSpanCoords.top + textBoxCoords.top - fauxDivCoords.top - this._textBox.scrollTop,
-      width: fauxSpanCoords.width,
-      height: fauxSpanCoords.height,
-      right: _left + fauxSpanCoords.width,
-      bottom: _top + fauxSpanCoords.height
+      left: _left = rightSpanCoords.left + textBoxCoords.left - fauxDivCoords.left - this._textBox.scrollLeft,
+      top: _top = rightSpanCoords.top + textBoxCoords.top - fauxDivCoords.top - this._textBox.scrollTop,
+      width: rightSpanCoords.width,
+      height: rightSpanCoords.height,
+      right: _left + rightSpanCoords.width,
+      bottom: _top + rightSpanCoords.height
     };
   };
 })();

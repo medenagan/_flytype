@@ -1,0 +1,54 @@
+1. Bug positioning when work is at the end (only textbox)
+3. divisione words in editabel
+4. STats
+6. Bug: When cursor initial, then you type in the middle, flyetype moves selction to the up
+7. AFter ENTER suggestions persistent
+
+7. FAQ
+
+--
+8. Shoudl not replace numbers
+9. Levensthein should be lowercases: PayPla
+10. Fabio, Fabio : doppione
+11. too slow levensthien
+12. refundS?
+13. Numeri, date 34dogs2 years - 34 dogs 2 years
+14. import of json dictionary
+--
+
+
+longpressed + ctrl / shift alt
+
+Pause All sites
+
+Pause A page
+
+Pause a domain
+
+
+
+BUG TF OPERATION oK?
+
+border based on console
+
+
+
+
+https://www.davrous.com/2016/12/07/creating-an-extension-for-all-browsers-edge-chrome-firefox-opera-brave/
+
+https://detectmybrowser.com/javascripts/browser.js
+
+
+Chromium-like:
+- Chrome YES
+- Opera YES
+- Vivaldi YES
+
+- Bravo ? too trouble, don't accept developer mode
+
+
+
+
+- Edge: NO: not showing tag but replacing, options on menu
+
+

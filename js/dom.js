@@ -11,8 +11,6 @@
 
  "use strict";
 
-
-
 var TAG_POPUP_WAIT = 1750;
 
 var SPACE_LIKE_CHARS = ". :;!?,";
@@ -257,8 +255,23 @@ function onKeyup(e) {
   if ( (fly.target === e.target) && (! e.ctrlKey) && (! e.altKey) &&
        (e.key.length === 1 || e.keyCode === KEY_BACKSPACE || e.keyCode === KEY_DELETE))
   {
-    fly.trigger({show: true, synch: !true });
+    fly.trigger({show: true, synch: true });
     // Increase only for printable chars
     if (e.key.length === 1) stats.pressedKeys = +1;
   }
 };
+
+
+function sleep(ms) {
+  var done;
+
+  function check() {
+    return done;
+  }
+
+  setTimeout(function () {
+    done = true ;
+  }, ms);
+
+  while (check()) {/**/}
+}

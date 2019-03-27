@@ -179,8 +179,8 @@ function Fly() {
 				ul.show();
 
 				// Adjust position
-				//ul.moveNew.asynch(this, anatomy.wordRange); // anatomy.leftValue.length);
-				ul.moveNew.call(this, anatomy.wordRange);
+				//ul.move.asynch(this, anatomy.wordRange); // anatomy.leftValue.length);
+				ul.move.call(this, anatomy.wordRange);
       }
     }
   };
@@ -360,7 +360,8 @@ function SuggestionTag() {
     suggestionsUserChosen = true;
   };
 
-  this.moveNew = function (range) {
+  this.move = function (range) {
+
     // Check if the page removed the ul
     if (! tag.parentNode) {
       document.body.appendChild(tag);
@@ -369,9 +370,19 @@ function SuggestionTag() {
     var TAG_FONTSIZE_MIN = 13.50;
     var TAG_FONTSIZE_MAX = 22;
 
+    console.log("INIZIO a move() 1");
   //  var rect2 = range.getBoundingClientRect();
+
     var rect = range.collapseToLeft().getBoundingClientRect();
+
+    console.log("INIZIO a move() 2");
+
+
+
     var fontSize = Math.min(Math.max(rect.height, TAG_FONTSIZE_MIN), TAG_FONTSIZE_MAX);
+
+
+    console.log({rect, fontSize});
 
 
 
@@ -403,9 +414,7 @@ function SuggestionTag() {
 }
 
 function anatomizeCurrentWord (node) {
-
-
-
+  
     var anatomy = {};
 
     // Selected range
@@ -513,53 +522,6 @@ function selectRange (range) {
 /* PROTOTYPE */
 
 
-Object.prototype.toFileJSON = function (spaces) {
-  var blob = new Blob([JSON.stringify(this, false, spaces)], {type: "text/csv;charset=utf-8;"}); // Does not save without csv, for example application/json not working
-  window.open(URL.createObjectURL(blob));
-};
-
-String.prototype.toBlobFile = function () {
-  var blob = new Blob([this], {type: "text/csv;charset=utf-8;"}); // Does not save without csv, for example application/json not working
-  window.open(URL.createObjectURL(blob));
-};
-
-Array.prototype.toCSVString = function (tab, newline) {
-  tab = tab || "\t";
-  newline = newline || "\n";
-  var args = []; var list = [];
-  for (var k = 0; k < this.length; k++) {
-    var element = this[k];
-    var properties;
-    var typeElement = Array.isArray(element) ? "array" : typeof(element);
-    switch (typeElement) {
-      case "string":
-      case "number":
-      case "boolean":
-      case "array":
-        var value = element;
-        properties = ["[" + typeElement + "]"];
-        element = {};
-        element[properties[0]] = value;
-        break;
-      default:
-        properties = Object.getOwnPropertyNames(element);
-    }
-    args.uniquePush.apply(args, properties);
-    list.push(args.map(function (a) {
-      return element.hasOwnProperty(a) ? String(element[a]) : ""; //  JSON.stringify(element[a])
-    }).join(tab));
-  }
-  list.unshift(args.join(tab));
-  return list.join(newline);
-};
-
-Array.prototype.uniquePush = function () {
-  for (var i = 0; i < arguments.length; i++) {
-    var a = arguments[i];
-    if (this.indexOf(a) === -1) this.push(a);
-  }
-};
-
 // Based on http://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript
 Array.prototype.equals = function (array) {
   // No array?
@@ -582,93 +544,3 @@ Array.prototype.equals = function (array) {
   }
   return true;
 };
-
-String.prototype.regexIndexOf_ = function (pattern) {
-  var rex = pattern.exec(this);
-  return rex ? rex.index : -1;
-};
-
-
-(function () {
-  // Based on faux div technique https://github.com/component/textarea-caret-position/conblob/master/index.js
-
-  // Create a mirrored div
-  var fauxDiv = document.createElement("div");
-
-  // Set position off-screen
-  fauxDiv.style.position = "absolute";
-  fauxDiv.style.left = "-30px";
-  fauxDiv.style.top = "-1px";
-  fauxDiv.style.display = "block";
-  fauxDiv.style.visibility = "hidden";  // not 'display: none' because we want rendering
-  //////fauxDiv.style.visibility = "visible" //"hidden";  // not 'display: none' because we want rendering
-
-  // Add a global the function getCaretCoordinates
-  window.getCaretCoordinates = function (element, position) {
-
-    var editStyle = getComputedStyle(element);
-    // Transfer the element's properties to the div
-    Object.getOwnPropertyNames(editStyle).forEach(function (s) {
-      // Filter some properties
-      if (["position", "left", "top", "display", "visibility"].indexOf(s) === -1) {
-        fauxDiv.style[s] = editStyle[s];
-      }
-    });
-
-    // Words can be broken if are too long to emulate TEXTAREAs. INPUTs are always single line.
-    if (element.nodeName === "TEXTAREA") {
-       // Words can be broken if are too long to emulate TEXTAREAs.
-      fauxDiv.style.wordWrap = "break-word";
-      // Preserve whitespace, break on spaces to simulate TEXTAREAs
-      fauxDiv.style.whiteSpace = "pre-wrap"
-    }
-    else if (element.nodeName === "INPUT") {
-      // INPUTs are always single line.
-      fauxDiv.style.wordWrap = "normal";
-      // Preserve whitespace, never break on spaces as INPUTs don't
-      fauxDiv.style.whiteSpace = "pre"
-    }
-
-    // overflow must be forced each time after changing style since it gets defaulted, cannot be filters as position, left ...
-    // for Chrome: clipped content and do not render a scrollbar; since scrollbars on textareas are outside whereas on divs inside
-    fauxDiv.style.overflow = "hidden";
-
-    // Need to add div to body or it won't be rendered
-    document.body.appendChild(fauxDiv);
-
-
-    fauxDiv.textContent = element.value.substring(0, position);
-    // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
-    //if (element.nodeName === 'INPUT') fauxDiv.textContent = fauxDiv.textContent.replace(/\s/g, '\u00a0');
-
-    // Wrapping must be replicated *exactly*, including when a long word gets
-    // onto the next line, with whitespace at the end of the line before (#7).
-    // The  *only* reliable way to do that is to copy the *entire* rest of the
-    // textarea's content into the <span> created at the caret position.
-    // for inputs, just '.' would be enough, but why bother?
-
-    // Created a faux span to extract position
-    var fauxSpan = document.createElement("span");
-    fauxDiv.appendChild(fauxSpan);
-
-    var coordinates = {};
-    // Measure one line of text
-    fauxSpan.textContent = "W";
-    coordinates.singleLineHeight = fauxSpan.offsetHeight;
-
-    fauxSpan.textContent = element.value.substring(position) || ".";  // || because a completely empty faux span doesn't render at all
-
-    coordinates.top = fauxSpan.offsetTop + parseInt(editStyle.borderTopWidth) - element.scrollTop;
-    coordinates.left = fauxSpan.offsetLeft + parseInt(editStyle.borderLeftWidth) - element.scrollLeft;
-
-    coordinates.fauxSpanLeft = fauxSpan.offsetLeft;
-    coordinates.fauxSpanText = fauxSpan.textContent;
-    coordinates.scrollLeft = element.scrollLeft;
-
-    // Remove div
-    document.body.removeChild(fauxDiv);
-
-    return coordinates;
-  };
-
-}());

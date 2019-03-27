@@ -241,13 +241,6 @@ $(document).on("pagecreate", function() {
         return subC / totC;
       });
 */
-      console.log(n, nDetail);
-      console.timeEnd("info");
-
-
-
-
-
 
 
 

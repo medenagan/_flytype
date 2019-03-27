@@ -1,74 +1,76 @@
 {
-  "manifest_version": 2,
-  "name": "FlyType",
-  "description": "Type faster with flying suggestions as you press the keys",
-  "version": "1.0.0",
-  "author": "Fabio Mereu",
-  "homepage_url": "https://github.com/medenagan/flytype",
-  "icons": {
-    "16": "/png/flytype-16.png",
-    "48": "/png/flytype-48.png",
-    "128": "/png/flytype-128.png"
-  },
-  "permissions": [
-    "contextMenus",
-    "storage",
-    "alarms"
-  ],
-  "background": {
-    "scripts": [
-      "/js/meta.js",
-      "/js/lib.js",
-      "/js/settings.js",
-      "/js/ngramDB.js",
-      "/js/background.js"
-    ],
-    "persistent": false
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "/js/meta.js",
-        "/js/lib.js",
-        "/js/settings.js",
-        "js/stats.js",
-        "/js/range.js",
-        "/js/matcher.js",
-        "/js/fly.js",
-        "/js/dom.js"
-      ],
-      "css": [
-        "css/flytype.css"
-      ],
-      "all_frames": true,
-      "match_about_blank": true,
-      "run_at": "document_end"
-    }
-  ],
-  "options_page": "/page/options.html",
-  "options_ui": {
-    "page": "/page/options.html",
-    "open_in_tab": true
-  },
-  "browser_action": {
-    "default_title": "FlyType",
-    "default_popup": "/page/popup.html"
-  },
-  "commands": {
-    "toggle": {
-      "suggested_key": {
-        "default": "Ctrl+Space"
-      },
-      "description": "Toggle FlyType on the page"
-    },
-    "trigger": {
-      "suggested_key": {
-        "default": "Alt+X"
-      },
-      "description": "Trigger or hide suggestions"
-    }
-  }
+	"manifest_version": 2,
+	"name": "FlyType",
+	"description": "Type faster with flying suggestions as you press the keys",
+	"version": "1.0.0",
+	"author": "Fabio Mereu",
+	"homepage_url": "https://github.com/medenagan/flytype",
+	"icons": {
+		"16": "/png/flytype-16.png",
+		"48": "/png/flytype-48.png",
+		"128": "/png/flytype-128.png"
+	},
+	"permissions": [
+		"contextMenus",
+		"storage",
+		"alarms"
+	],
+	"background": {
+		"scripts": [
+			"js/meta.js",
+			"js/lib.js",
+			"js/settings.js",
+			"js/ngramClientBackground.js",
+			"js/ngramDBCreate.js",
+			"js/ngramDB.js",
+			"js/ngramDBRead.js",
+			"js/background.js"
+		],
+		"persistent": false
+	},
+	"content_scripts": [{
+		"matches": [
+			"<all_urls>"
+		],
+		"js": [
+			"js/range.js",
+			"js/meta.js",
+			"js/lib.js",
+			"js/ngramClientContent.js",
+			"js/settings.js",
+			"js/stats.js",
+			"js/matcher.js",
+			"js/fly.js",
+			"js/dom.js"
+		],
+		"css": [
+			"css/flytype.css"
+		],
+		"all_frames": true,
+		"match_about_blank": true,
+		"run_at": "document_end"
+	}],
+	"options_page": "/page/options.html",
+	"options_ui": {
+		"page": "/page/options.html",
+		"open_in_tab": true
+	},
+	"browser_action": {
+		"default_title": "FlyType",
+		"default_popup": "/page/popup.html"
+	},
+	"commands": {
+		"toggle": {
+			"suggested_key": {
+				"default": "Ctrl+Space"
+			},
+			"description": "Toggle FlyType on the page"
+		},
+		"trigger": {
+			"suggested_key": {
+				"default": "Alt+X"
+			},
+			"description": "Trigger or hide suggestions"
+		}
+	}
 }
